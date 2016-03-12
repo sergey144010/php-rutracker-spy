@@ -91,6 +91,13 @@ php create_config.php
         ]
 ```
 
+Создать недостающие директории cookie, log, themeSpy, torrent
+запустив скрипт
+```php
+php create_dir.php_
+```
+Все директории и файлы берутся из конфига.
+
 Настроить фильтр тем в файле sergey144010\RutrackerSpy\Filtr.php
 
 ```php
@@ -109,8 +116,7 @@ php create_config.php
 
 И собственно добавить отслеживаемые темы.
 По умолчанию файл отслеживаемых тем  - themeSpy/theme.txt
-Создать его и заполнить.
-Формат следующий: новая строка = новый раздел
+Заполнить его, формат следующий: новая строка = новый раздел
 ```php
 http://rutracker.org/forum/viewforum.php?f=2200
 http://rutracker.org/forum/viewforum.php?f=2093
