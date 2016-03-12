@@ -1,0 +1,20 @@
+{
+    "name": "sergey144010/php-rutracker-spy",
+	"version": "0.0.1",
+	"type": "package",
+	"description": "Tool for tracking new topics on the forum rutracker",
+	"keywords": ["php", "rutracker", "spy"],
+	"homepage": "https://github.com/sergey144010/php-rutracker-spy",
+	"license": "MIT",
+    "authors": [
+        {
+          "name": "Sergey144010",
+          "email": "sergey144010@mail.ru",
+          "homepage": "https://github.com/sergey144010"
+        }
+    ],
+    "require": {
+	    "php": ">=5.4",
+        "sunra/php-simple-html-dom-parser": "~1.5"
+    }
+}

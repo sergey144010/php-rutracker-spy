@@ -1,0 +1,13 @@
+/.idea/
+/vendor/
+/composer.lock
+Thumbs.db
+/cookie/bbData.txt
+/cookie/cookie.txt
+/log/log.txt
+/log/writeToFile.txt
+/log/isCookieValid.txt
+/torrent/*.torrent
+/themeSpy/theme.txt
+config.php
+
