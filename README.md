@@ -94,7 +94,7 @@ php create_config.php
 Создать недостающие директории cookie, log, themeSpy, torrent
 запустив скрипт
 ```php
-php create_dir.php_
+php create_dir.php
 ```
 Все директории и файлы берутся из конфига.
 
