@@ -187,15 +187,20 @@ class Parser
         $pos = stripos($sizeInput, " ");
         if ($pos !== false) {
             list($size, $dimension) = explode(' ', $sizeInput);
-            if ($dimension == 'GB') {
+            if ($dimension == 'GB' || $dimension == 'gb' || $dimension == 'Gb' || $dimension == 'gB') {
                 $size = $size * 1024;
             };
             return $size;
         };
 
-        // Если нет разделителя
-        // дописать
+        // Если нет разделителя, т.е. 1.2Gb или 5GB
+        if(preg_match("/^\d+.?\d*gb$/i", $sizeInput, $matches)){
+            $sizeGb = substr($matches[0], 0, -2);
+            $sizeMb = $sizeGb * 1024;
+            return $sizeMb;
+        };
 
-        return false;
+        // Предполагаем что исходный размер в мегабайтах
+        return $sizeInput;
     }
 }

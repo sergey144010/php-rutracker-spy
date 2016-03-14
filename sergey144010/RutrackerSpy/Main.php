@@ -30,6 +30,16 @@ namespace sergey144010\RutrackerSpy {
             return $class;
         }
 
+        public function filtrObject($class)
+        {
+            return $this->filtrClass(new $class);
+        }
+
+        public function filtrClass(FiltrInterface $class)
+        {
+            return $class;
+        }
+
         public function run()
         {
             // Проверяем подключение к базе данных
@@ -101,7 +111,7 @@ namespace sergey144010\RutrackerSpy {
                         #if($key!=0){continue;};
 
                         // Пропускаем через фильтр
-                        $rule = new Filtr();
+                        $rule = $this->filtrObject(Config::$filtrClass);
                         $ruleCheck = false;
                         if($rule->run($themeInternet)){
                             Log::add("Filtr Check successful");

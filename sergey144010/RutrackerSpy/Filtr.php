@@ -10,82 +10,176 @@ class Filtr extends MainFiltr
 
     public function genre()
     {
-        $can = ["комедия", "семейный", "приключения"];
+        if(!empty(Config::$filtrSetting["genre"])){
 
-        // Если нашли жанр - качаем
-        if($this->check($this->theme['name'], $can)){
-            return true;
+            // Качать только ...
+            if(!empty(Config::$filtrSetting["genre"]["only"])){
+                // Если нашли жанр - качаем
+                if($this->check($this->theme['name'], Config::$filtrSetting["genre"]["only"])){
+                    return true;
+                };
+                #Log::add("Filter GENRE failed ".$this->theme['name']);
+                Log::add("Filter GENRE failed");
+                return false;
+            };
+
+            // Всё кроме ...
+            if(!empty(Config::$filtrSetting["genre"]["exept"])){
+                // Если нашли жанр - не качать
+                if(!$this->check($this->theme['name'], Config::$filtrSetting["genre"]["exept"])){
+                    return true;
+                };
+                #Log::add("Filter GENRE failed ".$this->theme['name']);
+                Log::add("Filter GENRE failed");
+                return false;
+            };
+
         };
-        #Log::add("Filter GENRE failed ".$this->theme['name']);
-        return false;
+        // Если жанр не установлен вернуть true
+        return true;
     }
 
     public function quality()
     {
-        // Качать только
-        $can = ["HDRip", "DVDRip" ,"WEB-DLRip" , "BDRip"];
-        // Качать всё кроме
-        $not = ["CAMRip"];
+        if(!empty(Config::$filtrSetting["quality"])){
 
-        // Если нашли CAMRip - не скачивать
-        if(!$this->check($this->theme['name'], $not)){
-            return true;
+            // Качать только ...
+            if(!empty(Config::$filtrSetting["quality"]["only"])){
+                // Если нашли ... - качаем
+                if($this->check($this->theme['name'], Config::$filtrSetting["quality"]["only"])){
+                    return true;
+                };
+                #Log::add("Filter QUALITY failed ".$this->theme['name']);
+                Log::add("Filter QUALITY failed");
+                return false;
+            };
+
+            // Всё кроме ...
+            if(!empty(Config::$filtrSetting["quality"]["exept"])){
+                // Если нашли CAMRip - не скачивать
+                if(!$this->check($this->theme['name'], Config::$filtrSetting["quality"]["exept"])){
+                    return true;
+                };
+                #Log::add("Filter QUALITY failed ".$this->theme['name']);
+                Log::add("Filter QUALITY failed");
+                return false;
+            };
+
         };
-        #Log::add("Filter QUALITY failed ".$this->theme['name']);
-        return false;
+        return true;
     }
 
     public function size()
     {
-        $size = Parser::sizeMb($this->theme['size']);
-        $range = ["1 GB", "2 GB"];
+        if(!empty(Config::$filtrSetting["size"])){
 
-        // Если размер торрента от 1Gb до 2Gb - качаем
-        if(
-            Parser::sizeMb($range[0]) <= $size &&
-            Parser::sizeMb($range[1]) >= $size
-        ){
-            return true;
-        }
-        #Log::add("Filter SIZE failed ".$this->theme['size']);
-        return false;
+            if(!empty(Config::$filtrSetting["size"]["min"]) && !empty(Config::$filtrSetting["size"]["max"])){
+
+                $size = Parser::sizeMb($this->theme['size']);
+                $min = Parser::sizeMb(Config::$filtrSetting["size"]["min"]);
+                $max = Parser::sizeMb(Config::$filtrSetting["size"]["max"]);
+
+                // Если размер торрента от 1Gb до 2Gb - качаем
+                if(
+                    $min <= $size &&
+                    $max >= $size
+                ){
+                    return true;
+                }
+                #Log::add("Filter SIZE failed ".$this->theme['size']." - ".$size." - ".$min." - ".$max);
+                Log::add("Filter SIZE failed");
+                return false;
+
+            };
+
+            if(!empty(Config::$filtrSetting["size"]["min"]) && empty(Config::$filtrSetting["size"]["max"])){
+
+                $size = Parser::sizeMb($this->theme['size']);
+                $min = Parser::sizeMb(Config::$filtrSetting["size"]["min"]);
+
+                // Если размер торрента от 1Gb - качаем
+                if(
+                    $min <= $size
+                ){
+                    return true;
+                }
+                #Log::add("Filter SIZE failed ".$this->theme['size']);
+                Log::add("Filter SIZE failed");
+                return false;
+
+            };
+
+            if(empty(Config::$filtrSetting["size"]["min"]) && !empty(Config::$filtrSetting["size"]["max"])){
+
+                $size = Parser::sizeMb($this->theme['size']);
+                $max = Parser::sizeMb(Config::$filtrSetting["size"]["max"]);
+
+                // Если размер торрента до 2Gb - качаем
+                if(
+                    $max >= $size
+                ){
+                    return true;
+                }
+                #Log::add("Filter SIZE failed ".$this->theme['size']);
+                Log::add("Filter SIZE failed");
+                return false;
+
+            };
+
+        };
+        return true;
     }
 
     public function stopWord()
     {
-        $not = [""];
+        if(!empty(Config::$filtrSetting["stopWord"])){
 
-        // Если нашли стоповое слово - не скачивать
-        if(!$this->check($this->theme['name'], $not)){
-            return true;
+            $array = Config::$filtrSetting["stopWord"];
+
+            // Если нашли стоповое слово - не скачивать
+            if(!$this->check($this->theme['name'], $array)){
+                return true;
+            };
+            #Log::add("Filter STOPWORD failed ".$this->theme['name']);
+            Log::add("Filter STOPWORD failed");
+            return false;
+
         };
-        #Log::add("Filter STOPWORD failed ".$this->theme['name']);
-        return false;
+        return true;
     }
 
     public function seed()
     {
-        $not = ["1"];
+        if(!empty(Config::$filtrSetting["seed"])){
 
-        // Если сидов меньше чем ... - не скачивать
-        if($not[0] < $this->theme['seed']){
-            return true;
+            if(!empty(Config::$filtrSetting["seed"]["min"])){
+                // Если сидов меньше чем ... - не скачивать
+                if(Config::$filtrSetting["seed"]["min"] < $this->theme['seed']){
+                    return true;
+                };
+                #Log::add("Filter SEED failed ".$this->theme['seed']);
+                Log::add("Filter SEED failed");
+                return false;
+            };
+
         };
-        #Log::add("Filter SEED failed ".$this->theme['seed']);
-        return false;
+        return true;
     }
 
     public function travelCard()
     {
-        $can = [""];
-
-        // Если нашли спец слово - скачать в любом случае
-        if($this->check($this->theme['name'], $can)){
-            return true;
-        };
-        #Log::add("Filter TRAVELCARD failed".$this->theme['name']);
+        if(!empty(Config::$filtrSetting["travelCard"])){
+            // Если нашли спец слово - скачать в любом случае
+            if($this->check($this->theme['name'], Config::$filtrSetting["travelCard"])){
+                return true;
+            };
+            #Log::add("Filter TRAVELCARD failed".$this->theme['name']);
+            return false;
+        }
         return false;
     }
+
+    // Можно добавить фильтр по автору топика
 
     /*
      * Переопределяем метод родителя checkAllRule()
