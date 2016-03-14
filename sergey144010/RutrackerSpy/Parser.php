@@ -9,7 +9,7 @@ class Parser
     public static function contentGetThemeArrayMaxSize($content)
     {
         $fileName = $content;
-        #$fileName = "log/log.txt";
+        #$fileName = "log/writeToFile.txt";
         $dom = HtmlDomParser::str_get_html($fileName);
         #$dom = HtmlDomParser::file_get_html( $fileName );
         #$topicLink = $dom->find('a[class=torTopic]');
@@ -19,7 +19,12 @@ class Parser
 
             $themeCurrent = HtmlDomParser::str_get_html($theme);
 
-            // Первый разбор
+            //
+            // Берем
+            // ссылку на топик,
+            // id топика
+            // полное название топика
+            //
             $themeCurrentElementA1 = $themeCurrent->find('a[class=torTopic]');
 
             foreach ($themeCurrentElementA1 as $elementA) {
@@ -28,11 +33,39 @@ class Parser
                 $themeCurrentName = trim($elementA->plaintext);
             };
 
-            // Второй разбор
+            //
+            // Берем
+            // размер торрента,
+            // ссылку на торрент файл
+            //
             $themeCurrentElementA2 = $themeCurrent->find('div[class=small] > a');
             foreach ($themeCurrentElementA2 as $elementA) {
                 $themeCurrentSize = trim($elementA->plaintext);
                 $themeCurrentTorrentFile = $elementA->getAttribute('href');
+            };
+
+            //
+            // Берем
+            // Автора топика
+            // здесь и латинница и кириллица
+            //
+            $topicAuthorArray = $themeCurrent->find('div[class=topicAuthor] > a[class=topicAuthor]');
+            foreach ($topicAuthorArray as $topicAuthor) {
+                $themeCurrentTopicAuthor = trim($topicAuthor->plaintext);
+            };
+
+            //
+            // Берем
+            // количество сидов и личей
+            // в темах объявлений их нет - NULL
+            //
+            $seedArray = $themeCurrent->find('div > span[class=seedmed]');
+            foreach ($seedArray as $seed) {
+                $themeCurrentSeed = trim($seed->plaintext);
+            };
+            $leechArray = $themeCurrent->find('div > span[class=leechmed]');
+            foreach ($leechArray as $leech) {
+                $themeCurrentLeech = trim($leech->plaintext);
             };
 
             if(
@@ -40,9 +73,12 @@ class Parser
                 isset($themeCurrentId) &&
                 isset($themeCurrentName) &&
                 isset($themeCurrentSize) &&
-                isset($themeCurrentTorrentFile)
+                isset($themeCurrentTorrentFile) &&
+                isset($themeCurrentTopicAuthor) &&
+                isset($themeCurrentSeed) &&
+                isset($themeCurrentLeech)
             ){
-                list($themeCurrentRusName, $topicOtherPart) = explode("/", $themeCurrentName);
+                list($themeCurrentRusName, $topicOtherPart) = explode("/", $themeCurrentName, 2);
                 $themeCurrentRusNameHash = hash('md5', $themeCurrentRusName);
 
                 /*
@@ -56,11 +92,21 @@ class Parser
                         'nameRusHash' => $themeCurrentRusNameHash,
                         'size' => $themeCurrentSize,
                         'href' => $themeCurrentHref,
-                        'torrentFile' => $themeCurrentTorrentFile
+                        'torrentFile' => $themeCurrentTorrentFile,
+                        'topicAuthor' => $themeCurrentTopicAuthor,
+                        'seed' => $themeCurrentSeed,
+                        'leech' => $themeCurrentLeech
                     ];
             };
         };
 
+        if(isset($themeArray)){
+            return $themeArray;
+        };
+
+        return false;
+
+/*
         if(isset($themeArrayRusNameHash)){
 
             // Смотрим одинаковые темы
@@ -118,14 +164,38 @@ class Parser
         }else{
             return false;
         }
+
+        */
+
     }
 
     public static function sizeMb($sizeInput)
     {
-        list($size, $dimension) = explode('&nbsp;', $sizeInput);
-        if ($dimension == 'GB') {
-            $size = $size * 1024;
+        // Если разделитель - "&nbsp;"
+        $pos = false;
+        $pos = stripos($sizeInput, "&nbsp;");
+        if ($pos !== false) {
+            list($size, $dimension) = explode('&nbsp;', $sizeInput);
+            if ($dimension == 'GB') {
+                $size = $size * 1024;
+            };
+            return $size;
         };
-        return $size;
+
+        // Если разделитель - " "
+        $pos = false;
+        $pos = stripos($sizeInput, " ");
+        if ($pos !== false) {
+            list($size, $dimension) = explode(' ', $sizeInput);
+            if ($dimension == 'GB') {
+                $size = $size * 1024;
+            };
+            return $size;
+        };
+
+        // Если нет разделителя
+        // дописать
+
+        return false;
     }
 }

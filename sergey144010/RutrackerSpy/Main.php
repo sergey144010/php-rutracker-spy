@@ -103,7 +103,7 @@ namespace sergey144010\RutrackerSpy {
                         // Пропускаем через фильтр
                         $rule = new Filtr();
                         $ruleCheck = false;
-                        if($rule->run($themeInternet['name'])){
+                        if($rule->run($themeInternet)){
                             Log::add("Filtr Check successful");
                             $ruleCheck = true;
                         }else{
@@ -181,7 +181,7 @@ namespace sergey144010\RutrackerSpy {
 
         public function test()
         {
-
+            Parser::contentGetThemeArrayMaxSize(false);
         }
 
     }
