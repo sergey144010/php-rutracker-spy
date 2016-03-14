@@ -13,6 +13,8 @@ $fileAutoloadArray =
         'sergey144010/RutrackerSpy/Configuration.php',
         'sergey144010/RutrackerSpy/Logger.php',
         'sergey144010/RutrackerSpy/Main.php',
+        'sergey144010/RutrackerSpy/FiltrInterface.php',
+        'sergey144010/RutrackerSpy/MainFiltr.php',
         'sergey144010/RutrackerSpy/Filtr.php',
         'sergey144010/RutrackerSpy/DbInterface.php',
         'sergey144010/RutrackerSpy/Db.php',

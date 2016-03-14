@@ -16,7 +16,7 @@ class Filtr extends MainFiltr
         if($this->check($this->theme['name'], $can)){
             return true;
         };
-        #Log::add("Filter GENRE failed".$this->theme['name']);
+        #Log::add("Filter GENRE failed ".$this->theme['name']);
         return false;
     }
 
@@ -31,7 +31,7 @@ class Filtr extends MainFiltr
         if(!$this->check($this->theme['name'], $not)){
             return true;
         };
-        #Log::add("Filter QUALITY failed".$this->theme['name']);
+        #Log::add("Filter QUALITY failed ".$this->theme['name']);
         return false;
     }
 
@@ -47,7 +47,7 @@ class Filtr extends MainFiltr
         ){
             return true;
         }
-        #Log::add("Filter SIZE failed".$this->theme['size']);
+        #Log::add("Filter SIZE failed ".$this->theme['size']);
         return false;
     }
 
@@ -59,7 +59,19 @@ class Filtr extends MainFiltr
         if(!$this->check($this->theme['name'], $not)){
             return true;
         };
-        #Log::add("Filter STOPWORD failed".$this->theme['name']);
+        #Log::add("Filter STOPWORD failed ".$this->theme['name']);
+        return false;
+    }
+
+    public function seed()
+    {
+        $not = ["1"];
+
+        // Если сидов меньше чем ... - не скачивать
+        if($not[0] < $this->theme['seed']){
+            return true;
+        };
+        #Log::add("Filter SEED failed ".$this->theme['seed']);
         return false;
     }
 
@@ -91,7 +103,8 @@ class Filtr extends MainFiltr
             $this->quality() &&
             $this->genre() &&
             $this->size() &&
-            $this->stopWord()
+            $this->stopWord() &&
+            $this->seed()
         ){
             return true;
         }else{
