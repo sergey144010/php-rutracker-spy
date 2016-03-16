@@ -33,7 +33,9 @@ class Configuration
     static $themeSpyDir;
     static $themeSpyFileName;
 
+    static $filtrClass;
     static $filtrTurn;
+    static $filtrSetting;
 
     static $timer;
 
@@ -166,17 +168,27 @@ class Configuration
                 };
             };
 
+            // $timer
+            if(!isset(self::$timer)) {
+                if (isset($config["timer"]["time"])) {
+                    self::$timer = $config["timer"]["time"];
+                };
+            };
+
             // $filtr
+            if(!isset(self::$filtrClass)) {
+                if (isset($config["filtr"]["class"])) {
+                    self::$filtrClass = $config["filtr"]["class"];
+                };
+            };
             if(!isset(self::$filtrTurn)) {
                 if (isset($config["filtr"]["turn"])) {
                     self::$filtrTurn = $config["filtr"]["turn"];
                 };
             };
-
-            // $timer
-            if(!isset(self::$timer)) {
-                if (isset($config["timer"]["time"])) {
-                    self::$timer = $config["timer"]["time"];
+            if(!isset(self::$filtrSetting)) {
+                if (isset($config["filtr"]["setting"])) {
+                    self::$filtrSetting = $config["filtr"]["setting"];
                 };
             };
 
