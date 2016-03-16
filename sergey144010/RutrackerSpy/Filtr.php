@@ -13,7 +13,8 @@ class Filtr extends MainFiltr
         if(!empty(Config::$filtrSetting["genre"])){
 
             // Качать только ...
-            if(!empty(Config::$filtrSetting["genre"]["only"])){
+            // only - заполнен, а exept - пустой
+            if(!empty(Config::$filtrSetting["genre"]["only"]) && empty(Config::$filtrSetting["genre"]["exept"])){
                 // Если нашли жанр - качаем
                 if($this->check($this->theme['name'], Config::$filtrSetting["genre"]["only"])){
                     return true;
@@ -24,11 +25,31 @@ class Filtr extends MainFiltr
             };
 
             // Всё кроме ...
-            if(!empty(Config::$filtrSetting["genre"]["exept"])){
+            // only - пустой, а exept - заполнен
+            if(empty(Config::$filtrSetting["genre"]["only"]) && !empty(Config::$filtrSetting["genre"]["exept"])){
                 // Если нашли жанр - не качать
                 if(!$this->check($this->theme['name'], Config::$filtrSetting["genre"]["exept"])){
                     return true;
                 };
+                #Log::add("Filter GENRE failed ".$this->theme['name']);
+                Log::add("Filter GENRE failed");
+                return false;
+            };
+
+            // Качать только ... но, кроме ...
+            // only - заполнен и exept - заполнен
+            // на случай когда в описании - [комедия, ужасы]
+            if(!empty(Config::$filtrSetting["genre"]["only"]) && !empty(Config::$filtrSetting["genre"]["exept"])){
+                // Если нашли exept - не качать
+                if($this->check($this->theme['name'], Config::$filtrSetting["genre"]["exept"])){
+                    return false;
+                };
+                // exept не найден продолжаем
+                // Если нашли only - качать
+                if($this->check($this->theme['name'], Config::$filtrSetting["genre"]["only"])){
+                    return true;
+                };
+                // only не найдено фильтр провален
                 #Log::add("Filter GENRE failed ".$this->theme['name']);
                 Log::add("Filter GENRE failed");
                 return false;
