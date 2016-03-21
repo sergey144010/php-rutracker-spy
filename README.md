@@ -220,6 +220,7 @@ http://rutracker.org/forum/viewforum.php?f=2093
 "manyFiltr"=>"on",
 ```
 Далее необходимо создать сами фильтры следующей коммандой:
+
 Вариант №1.
 ```php
 php create_theme_config.php
@@ -336,6 +337,10 @@ php create_theme_config.php 1 NameTopic
 появится файл вида NameTopic.filtr.php
 Здесь даже если вы вместо 1 напишите 11, то всё равно будет создан один файл с
 именем NameTopic.filtr.php. Главное не пропустить данный параметр.
+
+Web
+---
+Просмотреть, что скачалось возможно через браузер - файл web.php
 
 Использование
 -------
