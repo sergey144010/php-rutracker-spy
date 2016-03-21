@@ -43,6 +43,9 @@ namespace sergey144010\RutrackerSpy {
         public function run()
         {
             // Проверяем подключение к базе данных
+            /**
+             * @var Db $db
+             */
             $db = $this->dbObject(Config::$dbClass);
             if($db->isConnect()){
                 // Если cookie есть, то
@@ -59,11 +62,12 @@ namespace sergey144010\RutrackerSpy {
                         Log::add("ERROR: Failed to open stream: HTTP request failed !");
                     }else{
                         $this->rutrackerClient->getHeader();
-                        $this->rutrackerClient->getContent();
                         $this->rutrackerClient->getCookie();
                         $this->rutrackerClient->getBbData();
-                        $this->rutrackerClient->getToken();
                         $this->rutrackerClient->saveCookie();
+                        $this->rutrackerClient->indexOpenLogin();
+                        $this->rutrackerClient->getContent();
+                        $this->rutrackerClient->getToken();
                         if($this->rutrackerClient->token){
                             $this->mainProcess();
                         }else{
@@ -76,15 +80,47 @@ namespace sergey144010\RutrackerSpy {
 
         public function mainProcess()
         {
-            // Открываем файл отслеживаемых тем
-            $fileThemeArray = file(Config::$themeSpyDir.DIRECTORY_SEPARATOR.Config::$themeSpyFileName);
-            Log::add("File with themeSpy open");
+            // Отслеживаемые темы
+            if(Config::$filtrManyFiltr == "on"){
+                $dir = scandir(Config::$themeSpyDir);
+                foreach ($dir as $file) {
+                    if($file == "." || $file == ".."){continue;};
+                    if(preg_match("/.filtr.php$/",$file)){
+
+                        $file = Config::$themeSpyDir.DIRECTORY_SEPARATOR.$file;
+                        $filtr = false;
+                        require_once($file);
+                        $fileThemeArray[] = $filtr;
+
+                    };
+
+                };
+                if(!isset($fileThemeArray)){
+                    $fileThemeArray = file(Config::$themeSpyDir.DIRECTORY_SEPARATOR.Config::$themeSpyFileName);
+                };
+                Log::add("File with themeSpy open");
+            }else{
+                // Открываем файл отслеживаемых тем
+                $fileThemeArray = file(Config::$themeSpyDir.DIRECTORY_SEPARATOR.Config::$themeSpyFileName);
+                Log::add("File with themeSpy open");
+            };
+
             foreach ($fileThemeArray as $themeSpy) {
-                $themeSpy = trim($themeSpy);
+
+                if(is_string($themeSpy)){
+                    $themeSpy = trim($themeSpy);
+                };
+                if(is_array($themeSpy)){
+                    $themeRaw = $themeSpy;
+                    $themeSpy = trim($themeRaw["url"]);
+                };
+
                 Log::add("Current theme - ".$themeSpy);
+                #var_dump($themeRaw["setting"]);
+                #continue;
 
                 // Проверяем есть ли данная тема в базе данных
-                // Если нет то создаем
+                // Если нет, то создаем
                 list($tableLink, $tableId) = explode("?", $themeSpy);
                 $db = $this->dbObject(Config::$dbClass);
                 #$db->tableSet($tableId);
@@ -111,6 +147,10 @@ namespace sergey144010\RutrackerSpy {
                         #if($key!=0){continue;};
 
                         // Пропускаем через фильтр
+                        if(Config::$filtrManyFiltr == "on"){
+                            // Переопределяем настройки фильтра из главного конфига
+                            Config::$filtrSetting = $themeRaw["setting"];
+                        };
                         $rule = $this->filtrObject(Config::$filtrClass);
                         $ruleCheck = false;
                         if($rule->run($themeInternet)){
@@ -191,7 +231,7 @@ namespace sergey144010\RutrackerSpy {
 
         public function test()
         {
-            Parser::contentGetThemeArrayMaxSize(false);
+            $this->mainProcess();
         }
 
     }

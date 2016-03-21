@@ -22,27 +22,23 @@ class Web
     public function index()
     {
         $db = new Db();
-        $db->tableSet("f=2200");
-        $array = $db->tableTake();
+        $array = $db->showTables();
+        foreach ($array as $table) {
+            if($table[0]=="theme"){continue;};
 
-        echo "<br>";
-        foreach ($array as $row) {
-            print_r(base64_decode($row['name']));
-            echo " - ".$row['themeId'];
+            $db->tableSet($table[0]);
+            $arrayTable = $db->tableTake();
+
+            foreach ($arrayTable as $row) {
+                echo "<a target='_blank' href='http://rutracker.org/forum/".$row['href']."'>";
+                echo base64_decode($row['name']);
+                echo "</a>";
+                echo " - ".$row['themeId'];
+                echo "<br>";
+            };
+            echo "##############################################";
             echo "<br>";
-        };
-        echo "<br>";
-        echo "##############################################";
-        echo "<br>";
 
-        $db->tableSet("f=2093");
-        $array = $db->tableTake();
-
-        echo "<br>";
-        foreach ($array as $row) {
-            print_r(base64_decode($row['name']));
-            echo " - ".$row['themeId'];
-            echo "<br>";
         };
     }
 

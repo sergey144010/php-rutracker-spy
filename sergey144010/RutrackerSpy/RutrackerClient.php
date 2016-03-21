@@ -178,6 +178,12 @@ class RutrackerClient extends HttpClient
                 $this->token = $token;
             };
         };
+        if($this->token){
+            Log::add("Token get successful");
+        }else{
+            Log::add("Token not get");
+            $this->writeToFile($this->content, Config::$logDir.DIRECTORY_SEPARATOR."tokenNotGet.txt");
+        };
         return $this;
     }
 

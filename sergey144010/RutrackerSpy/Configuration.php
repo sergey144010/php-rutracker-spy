@@ -6,36 +6,37 @@ use sergey144010\RutrackerSpy\Event;
 
 class Configuration
 {
-    static $configStatus;
+    public static $configStatus;
 
-    static $dbClass;
-    static $dbType;
-    static $dbHost;
-    static $dbName;
-    static $dbUser;
-    static $dbPass;
+    public static $dbClass;
+    public static $dbType;
+    public static $dbHost;
+    public static $dbName;
+    public static $dbUser;
+    public static $dbPass;
 
-    static $clientUser;
-    static $clientPass;
+    public static $clientUser;
+    public static $clientPass;
 
-    static $torrentDir;
-    static $torrentDirTemp;
-    static $torrentAttempt;
+    public static $torrentDir;
+    public static $torrentDirTemp;
+    public static $torrentAttempt;
 
-    static $logDir;
-    static $logFileName;
-    static $logTurn;
+    public static $logDir;
+    public static $logFileName;
+    public static $logTurn;
 
-    static $cookieDir;
-    static $cookieFileName;
-    static $cookieFileBbData;
+    public static $cookieDir;
+    public static $cookieFileName;
+    public static $cookieFileBbData;
 
-    static $themeSpyDir;
-    static $themeSpyFileName;
+    public static $themeSpyDir;
+    public static $themeSpyFileName;
 
-    static $filtrClass;
-    static $filtrTurn;
-    static $filtrSetting;
+    public static $filtrClass;
+    public static $filtrTurn;
+    public static $filtrManyFiltr;
+    public static $filtrSetting;
 
     static $timer;
 
@@ -184,6 +185,11 @@ class Configuration
             if(!isset(self::$filtrTurn)) {
                 if (isset($config["filtr"]["turn"])) {
                     self::$filtrTurn = $config["filtr"]["turn"];
+                };
+            };
+            if(!isset(self::$filtrManyFiltr)) {
+                if (isset($config["filtr"]["manyFiltr"])) {
+                    self::$filtrManyFiltr = $config["filtr"]["manyFiltr"];
                 };
             };
             if(!isset(self::$filtrSetting)) {

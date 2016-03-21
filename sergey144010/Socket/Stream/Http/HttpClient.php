@@ -9,6 +9,9 @@ class HttpClient
     public $request;
     public $response;
 
+    /**
+     * @var HttpOption $http
+     */
     public $http;
     public $httpOption;
     public $target;

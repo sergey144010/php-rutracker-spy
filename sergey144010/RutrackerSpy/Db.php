@@ -12,6 +12,9 @@ class Db implements DbInterface
 {
     public $dbName;
     public $dbTable;
+    /**
+     * @var \PDO $dbh
+     */
     protected $dbh;
     protected $user;
     protected $pass;
@@ -199,5 +202,11 @@ NULL,
     {
         $elementS =  $this->dbh->query("SELECT * FROM `".$this->dbTable."` WHERE `nameRusHash` = '".$nameRusHash."' ");
         return $elementS;
+    }
+
+    public function showTables()
+    {
+        $array = $this->dbh->query('SHOW TABLES');
+        return $array;
     }
 }
