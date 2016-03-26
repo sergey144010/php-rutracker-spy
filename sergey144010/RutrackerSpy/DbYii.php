@@ -127,7 +127,7 @@ class DbYii implements DbInterface
         $this->table->size = $theme['size'];
         $this->table->href = $theme['href'];
         $this->table->torrentFile = $theme['torrentFile'];
-        $this->table->save();
+        $this->table->insert();
 
         // Пишем лог
         Log::add("Add new element in data base - ".$theme['id']);
