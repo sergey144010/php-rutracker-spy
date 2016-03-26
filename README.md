@@ -381,6 +381,12 @@ nssm.exe install RuTrackerSpy "путь до run_service.cmd"
 nssm.exe install RuTrackerSpy "C:\RutrackerSpy\run_service.cmd"
 ```
 
+В ветке attachYii2
+-----------------
+Прикреплен yii2 фреймворк.
+Дописан новый класс работы с базой данных на основе yii2.
+
+
 Что нужно исправить/добавить
 ----------------------------
 
