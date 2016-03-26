@@ -4,13 +4,26 @@ namespace sergey144010\RutrackerSpy {
     use sergey144010\RutrackerSpy\RutrackerClient;
     use sergey144010\RutrackerSpy\Parser;
     use sergey144010\RutrackerSpy\DbInterface;
+    use sergey144010\RutrackerSpy\DbYii;
     use sergey144010\RutrackerSpy\Filtr;
     use sergey144010\RutrackerSpy\Configuration as Config;
     use sergey144010\RutrackerSpy\Logger as Log;
 
     class Main
     {
+        /**
+         * @var RutrackerClient $rutrackerClient
+         */
         public $rutrackerClient;
+
+        /**
+         * @var DbYii $db
+         */
+        public $db;
+        /**
+         * @var Filtr $filtr
+         */
+        public $filtr;
 
         public function __construct()
         {
@@ -18,6 +31,8 @@ namespace sergey144010\RutrackerSpy {
             #new Config();
 
             $this->rutrackerClient = new RutrackerClient();
+            $this->db = $this->dbObject(Config::$dbClass);
+            $this->filtr = $this->filtrObject(Config::$filtrClass);;
         }
 
         public function dbObject($class)
@@ -43,11 +58,7 @@ namespace sergey144010\RutrackerSpy {
         public function run()
         {
             // Проверяем подключение к базе данных
-            /**
-             * @var Db $db
-             */
-            $db = $this->dbObject(Config::$dbClass);
-            if($db->isConnect()){
+            if($this->db->isConnect()){
                 // Если cookie есть, то
                 if ($this->rutrackerClient->isCookie() && $this->rutrackerClient->isCookieValid()) {
                     Log::add("Cookie is valid");
@@ -122,10 +133,10 @@ namespace sergey144010\RutrackerSpy {
                 // Проверяем есть ли данная тема в базе данных
                 // Если нет, то создаем
                 list($tableLink, $tableId) = explode("?", $themeSpy);
-                $db = $this->dbObject(Config::$dbClass);
+                #$db = $this->dbObject(Config::$dbClass);
                 #$db->tableSet($tableId);
-                if(!$db->tableExist($tableId)){
-                    $db->tableCreate($tableId);
+                if(!$this->db->tableExist($tableId)){
+                    $this->db->tableCreate($tableId);
                 };
 
                 #################################################
@@ -140,7 +151,7 @@ namespace sergey144010\RutrackerSpy {
                     // Создаем объект класса для работы с базой данных определенный в конфиге
                     #$db = $this->dbObject(Config::$dbClass);
                     #$db->tableSet("theme_one_spy");
-                    $db->tableSet($tableId);
+                    $this->db->tableSet($tableId);
 
                     foreach ($themeInternetArray as $key => $themeInternet) {
 
@@ -151,7 +162,8 @@ namespace sergey144010\RutrackerSpy {
                             // Переопределяем настройки фильтра из главного конфига
                             Config::$filtrSetting = $themeRaw["setting"];
                         };
-                        $rule = $this->filtrObject(Config::$filtrClass);
+                        #$rule = $this->filtrObject(Config::$filtrClass);
+                        $rule = $this->filtr;
                         $ruleCheck = false;
                         if($rule->run($themeInternet)){
                             Log::add("Filtr Check successful");
@@ -163,7 +175,7 @@ namespace sergey144010\RutrackerSpy {
 
                         if($ruleCheck){
 
-                            $element = $db->elementSearchByHash($themeInternet['nameRusHash']);
+                            $element = $this->db->elementSearchByHash($themeInternet['nameRusHash']);
                             if ($element) {
                                 // Совпадения найдены
                                 Log::add("Find in DB");
@@ -183,7 +195,7 @@ namespace sergey144010\RutrackerSpy {
                                     // Добавляем новый элемент в базу
                                     // в случае успешной загрузки
                                     if($this->rutrackerClient->torrentFileStatus){
-                                        $db->elementAdd($themeInternet);
+                                        $this->db->elementAdd($themeInternet);
                                     }else{
                                         Log::add("Element is not add in data base");
                                     };
@@ -210,7 +222,7 @@ namespace sergey144010\RutrackerSpy {
                                 // Добавляем новый элемент в базу
                                 // в случае успешной загрузки
                                 if($this->rutrackerClient->torrentFileStatus){
-                                    $db->elementAdd($themeInternet);
+                                    $this->db->elementAdd($themeInternet);
                                 }else{
                                     Log::add("Element is not add in data base");
                                 };
@@ -229,10 +241,7 @@ namespace sergey144010\RutrackerSpy {
 
         }
 
-        public function test()
-        {
-            $this->mainProcess();
-        }
+
 
     }
 

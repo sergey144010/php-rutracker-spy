@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `".$tableName."` (
   `nameRusHash` varchar(100) CHARACTER SET cp1251 NOT NULL DEFAULT '',
   `size` varchar(50) CHARACTER SET cp1251 NOT NULL DEFAULT '',
   `href` varchar(100) CHARACTER SET cp1251 NOT NULL DEFAULT '',
-  `torrentFile` varchar(150) CHARACTER SET cp1250 NOT NULL DEFAULT ''
+  `torrentFile` varchar(150) CHARACTER SET cp1251 NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=cp1251;
         ");
 
@@ -209,4 +209,5 @@ NULL,
         $array = $this->dbh->query('SHOW TABLES');
         return $array;
     }
+
 }

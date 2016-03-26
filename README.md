@@ -380,10 +380,13 @@ nssm.exe install RuTrackerSpy "путь до run_service.cmd"
 ```php
 nssm.exe install RuTrackerSpy "C:\RutrackerSpy\run_service.cmd"
 ```
+Добавлено
+---------
+1. Прикреплен yii2 фреймворк.
+2. Дописан класс работы с базой данных на основе yii2.
 
 Что нужно исправить/добавить
 ----------------------------
 
-1. Переписать класс работы с базой данных.
-2. Отвязаться от nameRusHash.
-3. Придумать что-то с web.
+1. Отвязаться от nameRusHash.
+2. Придумать что-то с web.

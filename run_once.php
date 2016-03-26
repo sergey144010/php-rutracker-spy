@@ -7,6 +7,7 @@ use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Logger as Log;
 use sergey144010\RutrackerSpy\Main;
 
+#\sergey144010\RutrackerSpy\Event::$configAfter = function (){Config::$logTurn=false;};
 new Config();
 
 Log::add("Start");

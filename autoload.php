@@ -18,6 +18,9 @@ $fileAutoloadArray =
         'sergey144010/RutrackerSpy/Filtr.php',
         'sergey144010/RutrackerSpy/DbInterface.php',
         'sergey144010/RutrackerSpy/Db.php',
+        'sergey144010/RutrackerSpy/DbYii.php',
+        'sergey144010/RutrackerSpy/Yii.php',
+        'sergey144010/RutrackerSpy/ActiveTable.php',
         'sergey144010/RutrackerSpy/Parser.php',
         'sergey144010/RutrackerSpy/RutrackerClient.php',
     ];

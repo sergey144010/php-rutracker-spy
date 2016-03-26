@@ -15,6 +15,7 @@
     ],
     "require": {
 	    "php": ">=5.4",
-        "sunra/php-simple-html-dom-parser": "~1.5"
+        "sunra/php-simple-html-dom-parser": "~1.5",
+        "yiisoft/yii2": "*"
     }
 }
