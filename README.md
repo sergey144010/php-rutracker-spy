@@ -56,7 +56,7 @@ php create_config.php
             // Класс для работы с базой данных
             # Можно создать свой класс в соответствии с DbInterface
             # и подключить его здесь
-            "class"=>"sergey144010\RutrackerSpy\Db",
+            "class"=>"sergey144010\RutrackerSpy\DbYii",
             // Сервер базы данных
             "type"=>"mysql",
             // Хост базы данных
