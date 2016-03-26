@@ -33,7 +33,11 @@ class Web
                 echo "<a target='_blank' href='http://rutracker.org/forum/".$row['href']."'>";
                 echo base64_decode($row['name']);
                 echo "</a>";
-                echo " - ".$row['themeId'];
+                echo " - ";
+                $id = substr($row['themeId'],3);
+                echo "<a href='".Config::$torrentDir."/t=".$id.".torrent'>";
+                echo $row['themeId'];
+                echo "</a>";
                 echo "<br>";
             };
             echo "##############################################";
