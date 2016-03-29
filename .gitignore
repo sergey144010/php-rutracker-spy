@@ -7,4 +7,7 @@
 config.php
 composer.lock
 Thumbs.db
+/web/assets/
+/web/css/
+/runtime/
 

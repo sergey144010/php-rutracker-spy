@@ -25,6 +25,11 @@ namespace sergey144010\RutrackerSpy {
          */
         public $filtr;
 
+        public $countPage;
+        public $stopParsing;
+        public $fileThemeArray;
+        public $themeRaw;
+
         public function __construct()
         {
             // Инициализация конфига
@@ -62,6 +67,7 @@ namespace sergey144010\RutrackerSpy {
                 // Если cookie есть, то
                 if ($this->rutrackerClient->isCookie() && $this->rutrackerClient->isCookieValid()) {
                     Log::add("Cookie is valid");
+                    $this->getThemeFiltr();
                     $this->mainProcess();
                 } else {
                     // Если cookie нет, то логинимся
@@ -80,6 +86,7 @@ namespace sergey144010\RutrackerSpy {
                         $this->rutrackerClient->getContent();
                         $this->rutrackerClient->getToken();
                         if($this->rutrackerClient->token){
+                            $this->getThemeFiltr();
                             $this->mainProcess();
                         }else{
                             Log::add("ERROR: Login is failed");
@@ -89,8 +96,9 @@ namespace sergey144010\RutrackerSpy {
             };
         }
 
-        public function mainProcess()
+        public function getThemeFiltr()
         {
+            $fileThemeArray = false;
             // Отслеживаемые темы
             if(Config::$filtrManyFiltr == "on"){
                 $dir = scandir(Config::$themeSpyDir);
@@ -116,35 +124,49 @@ namespace sergey144010\RutrackerSpy {
                 Log::add("File with themeSpy open");
             };
 
-            foreach ($fileThemeArray as $themeSpy) {
+            $this->fileThemeArray = $fileThemeArray;
+        }
+
+        public function mainProcess()
+        {
+
+            foreach ($this->fileThemeArray as $themeSpy) {
 
                 if(is_string($themeSpy)){
                     $themeSpy = trim($themeSpy);
                 };
+
                 if(is_array($themeSpy)){
-                    $themeRaw = $themeSpy;
-                    $themeSpy = trim($themeRaw["url"]);
+                    // Сохраняем настройки раздела
+                    $this->themeRaw = $themeSpy;
+                    $themeSpy = trim($this->themeRaw["url"]);
                 };
 
                 Log::add("Current theme - ".$themeSpy);
                 #var_dump($themeRaw["setting"]);
                 #continue;
 
-                // Проверяем есть ли данная тема в базе данных
-                // Если нет, то создаем
-                list($tableLink, $tableId) = explode("?", $themeSpy);
-                #$db = $this->dbObject(Config::$dbClass);
-                #$db->tableSet($tableId);
-                if(!$this->db->tableExist($tableId)){
-                    $this->db->tableCreate($tableId);
-                };
-
-                #################################################
-
+                // Открываем раздел
                 $this->rutrackerClient->urlOpenLogin($themeSpy);
                 $this->rutrackerClient->getContent();
                 $this->rutrackerClient->writeToFile($this->rutrackerClient->content);
+                // Парсим раздел
                 $themeInternetArray = Parser::contentGetThemeArrayMaxSize($this->rutrackerClient->content);
+                $themeInternetTitle = Parser::getTitle($this->rutrackerClient->content);
+                $themeInternetCountPage = Parser::getPagination($this->rutrackerClient->content);
+                $this->countPage = $themeInternetCountPage;
+
+                // Проверяем есть ли заданная тема из конфига в базе данных
+                // Если нет, то создаем
+                preg_match("/\?[\w|\d|=]*/i", $themeSpy, $matches);
+                $tableId = substr($matches[0], 1);
+                #list($tableLink, $tableId) = explode("?", $themeSpy);
+                if(!$this->db->tableExist($tableId)){
+                    $this->db->tableCreate($tableId);
+                    $this->db->elementAddTheme(["tableId"=>$tableId, "name"=>$themeInternetTitle]);
+                };
+
+                #################################################
 
                 if ($themeInternetArray) {
 
@@ -160,7 +182,7 @@ namespace sergey144010\RutrackerSpy {
                         // Пропускаем через фильтр
                         if(Config::$filtrManyFiltr == "on"){
                             // Переопределяем настройки фильтра из главного конфига
-                            Config::$filtrSetting = $themeRaw["setting"];
+                            Config::$filtrSetting = $this->themeRaw["setting"];
                         };
                         #$rule = $this->filtrObject(Config::$filtrClass);
                         $rule = $this->filtr;
@@ -236,12 +258,60 @@ namespace sergey144010\RutrackerSpy {
                     Log::add("Error: Parser False");
                 };
 
+                // Парсим страницы
+                if(!$this->stopParsing){
+                    // Смотрим конфиг
+                    if(isset($this->themeRaw) && isset($this->themeRaw["entry"])){
+                        // Сколько нужно страниц просмотреть
+                        $entry = trim($this->themeRaw["entry"]);
+
+                        // Проверяем есть ли страницы
+                        if($this->countPage){
+                            $this->countPage = (int) $this->countPage;
+
+                            // Проверяем, что указал пользователь в конфиге
+                            if($entry == "all"){
+                                $countSeePage = $this->countPage;
+                            }else{
+                                if(preg_match("/^\d+$/", $entry)){
+                                    $countSeePage = (int) $entry;
+                                }else{
+                                    $countSeePage = 0;
+                                };
+                            };
+
+                            // Если пользователь указал больше страниц чем есть
+                            if($countSeePage > $this->countPage){
+                                $countSeePage = $this->countPage;
+                            };
+
+                            // Если вдруг установлено отрицательное значение
+                            // то ничего не происходит
+                            if($countSeePage > 0){
+                                // Формируем массив для парсинга
+                                $i=0;$start=0;
+                                while($i < $countSeePage){
+                                    $start = $start+50;
+                                    $fileThemeArray[] = $themeSpy."&start=".$start;
+                                    $i++;
+                                };
+                            };
+
+                            // Если массив сформирован запускаем основной процесс
+                            if(isset($fileThemeArray)){
+                                $this->fileThemeArray = $fileThemeArray;
+                                $this->stopParsing = true;
+                                $this->mainProcess();
+                                $this->stopParsing = false;
+                            };
+                        };
+                    };
+                };
+
             }
 
 
         }
-
-
 
     }
 

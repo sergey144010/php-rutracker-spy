@@ -6,6 +6,41 @@ use sergey144010\BaseFunctionExtension\ArrayExt;
 
 class Parser
 {
+    /**
+     * @param $content
+     * @return false|string
+     */
+    public static function getTitle($content)
+    {
+        $title = false;
+        $fileName = $content;
+        $dom = HtmlDomParser::str_get_html($fileName);
+        $array = $dom->find('h1[class=maintitle]');
+        foreach ($array as $titleCurrent) {
+            $title = trim($titleCurrent->plaintext);
+        };
+
+        return $title;
+    }
+
+    public static function getPagination($content)
+    {
+        $count = false;
+        $fileName = $content;
+        #$fileName = "log/writeToFile.txt";
+        $dom = HtmlDomParser::str_get_html($fileName);
+        #$dom = HtmlDomParser::file_get_html( $fileName );
+        $array = $dom->find('div[id=pagination] > p > b');
+        foreach ($array as $b) {
+            $count[] = trim($b->plaintext);
+        };
+        if($count){
+            $count = $count[1];
+        };
+
+        return $count;
+    }
+
     public static function contentGetThemeArrayMaxSize($content)
     {
         $fileName = $content;
@@ -69,6 +104,7 @@ class Parser
             };
 
             if(
+                // Параметры текущего топика
                 isset($themeCurrentHref) &&
                 isset($themeCurrentId) &&
                 isset($themeCurrentName) &&

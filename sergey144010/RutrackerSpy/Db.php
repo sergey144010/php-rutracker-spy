@@ -169,6 +169,10 @@ NULL,
 
         Log::add("Add new element in data base - ".$theme['id']);
     }
+
+    // Заглушка
+    public function elementAddTheme(array $array){}
+
     public function elementDelById($id){
         $this->dbh->query("DELETE FROM `".$this->dbName."`.`".$this->dbTable."` WHERE `".$this->dbTable."`.`id` = ".$id);
     }

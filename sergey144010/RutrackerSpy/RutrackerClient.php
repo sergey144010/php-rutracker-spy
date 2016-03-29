@@ -367,16 +367,27 @@ class RutrackerClient extends HttpClient
 
     public function getTorrentFile($torrentFile)
     {
-        $i = 1;
-        do {
-            $this->downloadTorrentFile($torrentFile);
-            if($i == Config::$torrentAttempt){$i = 1; break;};
-            $i++;
-        }while(!$this->checkTorrentFile());
+        // ѕровер€ем, что установил пользователь
+        $attempt = trim(Config::$torrentAttempt);
+        if($attempt){
+            if(preg_match("/^\d+$/", $attempt)){
+                $countAttempt = $attempt;
+            }else{
+                $countAttempt = 10;
+            };
 
-        if($this->torrentFileStatus){
-            $this->moveTorrentFile();
+            $i = 1;
+            do {
+                $this->downloadTorrentFile($torrentFile);
+                if($i == $countAttempt){$i = 1; break;};
+                $i++;
+            }while(!$this->checkTorrentFile());
+
+            if($this->torrentFileStatus){
+                $this->moveTorrentFile();
+            };
         };
+
         return $this;
     }
 

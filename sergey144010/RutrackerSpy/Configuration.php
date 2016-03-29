@@ -7,6 +7,7 @@ use sergey144010\RutrackerSpy\Event;
 class Configuration
 {
     public static $configStatus;
+    public static $configFileName;
 
     public static $dbClass;
     public static $dbType;
@@ -54,7 +55,12 @@ class Configuration
 
     public function run()
     {
-        require_once("config.php");
+        if(isset(self::$configFileName)){
+            require_once(self::$configFileName);
+        }else{
+            require_once("config.php");
+        };
+
         if(isset($config) && !isset(self::$configStatus)){
 
             // $config

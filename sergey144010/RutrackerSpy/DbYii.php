@@ -47,12 +47,6 @@ class DbYii implements DbInterface
             "ENGINE=InnoDB DEFAULT CHARSET=cp1251");
         $schema->execute();
 
-        // Добавляем запись в таблицу Theme
-        $this->tableSet('theme');
-        $this->table->themeId = $tableName;
-        $this->table->save();
-        $this->table = null;
-
         // Пишем лог
         Log::add("Create new table in data base - ".$tableName);
     }
@@ -104,6 +98,7 @@ class DbYii implements DbInterface
         $schema = $this->yii->db->createCommand()->createTable('theme',[
             'id'=>'pk',
             'themeId'=>"varchar(50) CHARACTER SET cp1251 NOT NULL DEFAULT ''",
+            'name'=>"varchar(250) CHARACTER SET cp1251 NOT NULL DEFAULT ''",
         ],
             "ENGINE=InnoDB DEFAULT CHARSET=cp1251");
         /**
@@ -133,6 +128,17 @@ class DbYii implements DbInterface
         Log::add("Add new element in data base - ".$theme['id']);
 
     }
+
+    public function elementAddTheme(array $array)
+    {
+        // Добавляем запись в таблицу Theme
+        ActiveTable::setTable("theme");
+        $table = new ActiveTable();
+        $table->themeId = $array["tableId"];
+        $table->name = base64_encode($array["name"]);
+        $table->insert();
+    }
+
     public function elementDelById($id){}
     public function elementDelByHash($hashName){}
     public function elementSearchById($id){}
