@@ -167,15 +167,24 @@ class RutrackerClient extends HttpClient
             $srcArr = false;
             foreach ($scriptList as $key => $script) {
                 if ($scriptSrc = $script->innertext) {
-                    list($part1, $part2) = explode(";", $scriptSrc);
-                    $srcArr = explode(",", $part2);
+
+                    $scriptSrc = trim($scriptSrc);
+                    $explode= explode(";", $scriptSrc);
+                    if(isset($explode[1])){
+                        $explode[1] = trim($explode[1]);
+                        if(preg_match("/^window.BB/", $explode[1])){
+                            preg_match("/\{.*\}/m", $explode[1], $matches);
+                            $matches[0] = substr($matches[0], 1, -1);
+                            $matches[0] = trim($matches[0]);
+                            preg_match_all("/[^:]*:[^:]*,/m", $matches[0], $out);
+                            $out[0][1] = trim($out[0][1]);
+                            preg_match("/'.*'/", $out[0][1], $token);
+                            $token = substr($token[0], 1, -1);
+                            $this->token = $token;
+                        };
+                    };
+
                 };
-            };
-            if($srcArr){
-                list($tokenName, $token) = explode(":", trim($srcArr[2]));
-                $token = trim($token);
-                $token = str_replace("'", '', $token);
-                $this->token = $token;
             };
         };
         if($this->token){

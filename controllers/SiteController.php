@@ -69,5 +69,19 @@ class SiteController extends Controller
 
     }
 
+    public function actionLog()
+    {
+        $log = false;
+        $fileLog = "../".Config::$logDir.DIRECTORY_SEPARATOR.Config::$logFileName;
+        if(is_file($fileLog)){
+            $array = file($fileLog);
+            foreach ($array as $row) {
+                $log .= $row."<br>";
+            }
+
+        };
+        return $this->render("log",["log"=>$log]);
+    }
+
 
 }
