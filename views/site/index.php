@@ -1,8 +1,9 @@
 <?php
 use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
+use yii\bootstrap\Button;
 use yii\bootstrap\Html;
-use \yii\helpers\Url;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 $this->title = 'RutrackerSpy';
@@ -13,28 +14,35 @@ NavBar::begin([
 ]);
 
 echo Nav::widget([
-     'items' => [
-         ['label' => 'Themes', 'url' => ['/site/index']],
-         ['label' => 'Log', 'url' => ['/site/log']],
-     ],
-     'options' => ['class' => 'navbar-nav'],
+    'items' => [
+        ['label' => 'Themes', 'url' => ['/site/list-theme']],
+        ['label' => 'Log', 'url' => ['/site/log']],
+    ],
+    'options' => ['class' => 'navbar-nav'],
 ]);
 
 NavBar::end();
 
-echo "<table class='table'>";
-foreach ($themeArray as $theme) {
-    echo "<tr><td>";
-    echo Html::a(
-        iconv("cp1251","utf-8",base64_decode($theme["name"])),
-        Url::to(['site/index', 'themeId'=>$theme["themeId"]]),
-        [
-            #"class"=>"btn btn-primary btn-xs",
-            "type"=>"button",
-        ]
-    );
-    echo "</td></tr>";
+if(isset($isFileConfig)){
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Файл конфига найден"),
+        'options' => ['class' => 'btn btn-success btn-xs'],
+    ]);
+}else{
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Файл конфига не найден"),
+        'options' => ['class' => 'btn btn-danger btn-xs'],
+    ]);
 };
-echo "</table>";
 
 ?>
+<div class="site-index">
+
+    <div class="jumbotron">
+        <h1>Congratulations!</h1>
+
+        <p class="lead">You have successfully installed your RutrackerSpy application.</p>
+
+    </div>
+
+</div>

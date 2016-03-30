@@ -18,7 +18,7 @@ NavBar::begin([
 
 echo Nav::widget([
     'items' => [
-        ['label' => 'Themes', 'url' => ['/site/index']],
+        ['label' => 'Themes', 'url' => ['/site/list-theme']],
         ['label' => 'Log', 'url' => ['/site/log']],
     ],
     'options' => ['class' => 'navbar-nav'],

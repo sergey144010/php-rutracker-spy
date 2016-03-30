@@ -212,6 +212,8 @@ namespace sergey144010\RutrackerSpy {
 
                                 if($contrast == 0){
                                     Log::add("ElementBaseSize < ElementInSize");
+                                    #Log::add('element[size] - '.$element['size']);
+                                    Log::add($elementBaseSize." < ".$elementInSize);
                                     // Скачиваем торрент файл
                                     $this->rutrackerClient->getTorrentFile($themeInternet['torrentFile']);
                                     // Добавляем новый элемент в базу

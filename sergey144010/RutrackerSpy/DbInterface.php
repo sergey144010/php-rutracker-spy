@@ -30,7 +30,7 @@ interface DbInterface
     public function elementDelByHash($hashName);
     public function elementSearchById($id);
     /**
-     * @return true || false
+     * @return object || false
      */
     public function elementSearchByHash($nameRusHash);
     /**

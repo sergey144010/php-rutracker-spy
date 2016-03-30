@@ -14,13 +14,25 @@ NavBar::begin([
 
 echo Nav::widget([
     'items' => [
-        ['label' => 'Themes', 'url' => ['/site/index']],
+        ['label' => 'Themes', 'url' => ['/site/list-theme']],
         ['label' => 'Log', 'url' => ['/site/log']],
     ],
     'options' => ['class' => 'navbar-nav'],
 ]);
 
 NavBar::end();
+
+echo Html::a(
+    "Clean Log",
+    Url::to(['site/log', 'clear'=>'ok']),
+    [
+        "class"=>"btn btn-primary",
+        "type"=>"button",
+    ]
+);
+
+echo "<br>";
+echo "<br>";
 
 echo $log;
 ?>

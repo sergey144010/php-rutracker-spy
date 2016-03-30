@@ -10,48 +10,28 @@ use yii\filters\VerbFilter;
 use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\DbYii;
 use sergey144010\RutrackerSpy\ActiveTable;
+use sergey144010\RutrackerSpy\Logger as Log;
+use sergey144010\RutrackerSpy\Main;
 
 use app\models\Theme;
 
 class SiteController extends Controller
 {
 
-    public function actionIndex123()
+    public function actionIndex()
     {
-        $link = false;
-        $tables = false;
-
-        $array = Yii::$app->db->createCommand('SHOW TABLES')->queryAll();
-
-        foreach ($array as $table) {
-            if($table["Tables_in_rutracker_spy"]=="theme"){continue;};
-
-            $tables .= $table["Tables_in_rutracker_spy"]."|";
-
-            ActiveTable::setTable($table["Tables_in_rutracker_spy"]);
-
-            $arrayTable = ActiveTable::find()->all();
-
-            foreach ($arrayTable as $row) {
-                $link .= "<a target='_blank' href='http://rutracker.org/forum/".$row['href']."'>";
-                $link .= iconv("cp1251","utf-8", base64_decode($row['name']));
-                $link .= "</a>";
-                $link .= " - ";
-                $id = substr($row['themeId'],3);
-                $link .= "<a href='../".Config::$torrentDir."/t=".$id.".torrent'>";
-                $link .= $row['themeId'];
-                $link .= "</a>";
-                $link .= "<br>";$link .= "<br>";
-            };
-
-
-            $link .= "##############################################";
-            $link .= "<br>";
-
+        $isFileConfig = false;
+        if(!is_file("../config.php")){
+            $isFileConfig = false;
+        }else{
+            $isFileConfig = true;
         };
+         return $this->render('index', [
+             "isFileConfig" => $isFileConfig
+         ]);
     }
 
-    public function actionIndex()
+    public function actionListTheme()
     {
         if(Yii::$app->request->isGet && isset($_GET['themeId'])){
             ActiveTable::setTable($_GET['themeId']);
@@ -62,7 +42,7 @@ class SiteController extends Controller
 
         }else{
             $themeArray = Theme::find()->asArray()->all();
-            return $this->render('index',[
+            return $this->render('listTheme',[
                 "themeArray"=>$themeArray,
             ]);
         }
@@ -71,8 +51,13 @@ class SiteController extends Controller
 
     public function actionLog()
     {
-        $log = false;
         $fileLog = "../".Config::$logDir.DIRECTORY_SEPARATOR.Config::$logFileName;
+
+        if(isset($_GET['clear']) && $_GET['clear']=='ok'){
+            file_put_contents($fileLog,"");
+        };
+
+        $log = false;
         if(is_file($fileLog)){
             $array = file($fileLog);
             foreach ($array as $row) {

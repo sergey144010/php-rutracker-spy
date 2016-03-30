@@ -145,7 +145,7 @@ class DbYii implements DbInterface
     public function elementSearchByHash($nameRusHash){
         $obj = ActiveTable::findOne(['nameRusHash'=>$nameRusHash]);
         if(isset($obj)){
-            return true;
+            return $obj;
         }else{
             return false;
         }
