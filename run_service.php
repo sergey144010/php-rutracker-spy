@@ -25,8 +25,12 @@ while (true){
     Log::add("Start");
 
     // Стартуем
-    $program = new Main();
-    $program->run();
+    try{
+        $program = new Main();
+        $program->run();
+    }catch (\Exception $error){
+        Log::add($error->getMessage());
+    };
 
     // Ждём
     Log::add("Wait ".Config::$timer." sec");
