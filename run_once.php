@@ -11,5 +11,10 @@ use sergey144010\RutrackerSpy\Main;
 new Config();
 
 Log::add("Start");
-$program = new Main();
-$program->run();
+try{
+    $program = new Main();
+    $program->run();
+}catch (\Exception $error){
+    Log::add($error->getMessage());
+};
+

@@ -170,11 +170,6 @@ namespace sergey144010\RutrackerSpy {
 
                 if ($themeInternetArray) {
 
-                    // Создаем объект класса для работы с базой данных определенный в конфиге
-                    #$db = $this->dbObject(Config::$dbClass);
-                    #$db->tableSet("theme_one_spy");
-                    $this->db->tableSet($tableId);
-
                     foreach ($themeInternetArray as $key => $themeInternet) {
 
                         #if($key!=0){continue;};
@@ -197,6 +192,7 @@ namespace sergey144010\RutrackerSpy {
 
                         if($ruleCheck){
 
+                            $this->db->tableSet($tableId);
                             $element = $this->db->elementSearchByHash($themeInternet['nameRusHash']);
                             if ($element) {
                                 // Совпадения найдены
@@ -219,6 +215,7 @@ namespace sergey144010\RutrackerSpy {
                                     // Добавляем новый элемент в базу
                                     // в случае успешной загрузки
                                     if($this->rutrackerClient->torrentFileStatus){
+                                        $this->db->tableSet($tableId);
                                         $this->db->elementAdd($themeInternet);
                                     }else{
                                         Log::add("Element is not add in data base");
@@ -246,6 +243,7 @@ namespace sergey144010\RutrackerSpy {
                                 // Добавляем новый элемент в базу
                                 // в случае успешной загрузки
                                 if($this->rutrackerClient->torrentFileStatus){
+                                    $this->db->tableSet($tableId);
                                     $this->db->elementAdd($themeInternet);
                                 }else{
                                     Log::add("Element is not add in data base");

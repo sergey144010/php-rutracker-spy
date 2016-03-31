@@ -20,7 +20,10 @@ class Logger
                 file_put_contents($fileSave, $string, FILE_APPEND);
 
             }else{
-                self::add("ERROR: (Logger) : Given variable is not a string");
+                $type = "is undefined";
+                if(is_array($string)){$type = "is array"; $string = serialize($string);};
+                if(is_object($string)){$type = "is object"; $string = serialize($string);};
+                self::add("ERROR: (Logger) : Given variable is not a string - ".$type." - ".$string);
             };
         };
     }

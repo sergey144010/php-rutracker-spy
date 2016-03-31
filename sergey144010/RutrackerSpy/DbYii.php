@@ -109,11 +109,11 @@ class DbYii implements DbInterface
         Log::add("Create new table in data base - theme");
     }
 
-    public function elementAdd(array $array){
-
+    public function elementAdd(array $array)
+    {
         $theme = $array;
-        $theme['name'] = base64_encode($theme['name']);
-        $theme['size'] = base64_encode($theme['size']);
+        $theme['name'] = base64_encode($array['name']);
+        $theme['size'] = base64_encode($array['size']);
 
         // Пишем в базу
         $this->table->themeId = $theme['id'];
@@ -122,6 +122,7 @@ class DbYii implements DbInterface
         $this->table->size = $theme['size'];
         $this->table->href = $theme['href'];
         $this->table->torrentFile = $theme['torrentFile'];
+
         $this->table->insert();
 
         // Пишем лог

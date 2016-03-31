@@ -34,6 +34,7 @@ class SiteController extends Controller
     public function actionListTheme()
     {
         if(Yii::$app->request->isGet && isset($_GET['themeId'])){
+
             ActiveTable::setTable($_GET['themeId']);
             $topicArray = ActiveTable::find()->asArray()->all();
             return $this->render('theme',[
@@ -41,9 +42,16 @@ class SiteController extends Controller
             ]);
 
         }else{
-            $themeArray = Theme::find()->asArray()->all();
+
+            $error = false;
+            $themeArray = false;
+            try{
+                $themeArray = Theme::find()->asArray()->all();
+            }catch (\Exception $error){};
+
             return $this->render('listTheme',[
                 "themeArray"=>$themeArray,
+                "error"=>$error
             ]);
         }
 
