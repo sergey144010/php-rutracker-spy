@@ -7,8 +7,14 @@ class Yii
 {
     public static function init()
     {
-        defined('YII_DEBUG') or define('YII_DEBUG', true);
-        defined('YII_ENV') or define('YII_ENV', 'dev');
+        /**
+         * https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/structure-entry-scripts.md
+         */
+        defined('YII_DEBUG') or define('YII_DEBUG', false);
+        /**
+         * https://github.com/yiisoft/yii2/blob/master/docs/guide-ru/concept-configurations.md#environment-constants
+         */
+        defined('YII_ENV') or define('YII_ENV', 'prod');
 
 #require(__DIR__ . '/vendor/autoload.php');
 #require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
