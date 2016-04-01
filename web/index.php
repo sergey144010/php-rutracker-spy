@@ -3,8 +3,8 @@ use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Db;
 use sergey144010\RutrackerSpy\Event;
 
-defined('YII_DEBUG') or define('YII_DEBUG', false);
-defined('YII_ENV') or define('YII_ENV', 'prod');
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // регистрация загрузчика классов Composer
 require(__DIR__ . '/../vendor/autoload.php');
@@ -17,29 +17,43 @@ require('../autoload.php');
 Event::$configBefore = function (){Config::$configFileName="../config.php";};
 // Отключаем лог
 Event::$configAfter = function (){Config::$logTurn=false;};
-new Config();
+try{
+    new Config();
+    // загрузка конфигурации приложения
+#$config = require(__DIR__ . '/../config/web.php');
+    $config = [
+        'id' => 'rutrackerSpy',
+        'basePath' => dirname(__DIR__),
+        'extensions' => require('../vendor/yiisoft/extensions.php'),
+        'components' => [
+            'db' => [
+                'class' => 'yii\db\Connection',
+                'dsn' => Config::$dbType.':host='.Config::$dbHost.';dbname='.Config::$dbName,
+                'username' => Config::$dbUser,
+                'password' => Config::$dbPass,
+                'charset' => 'cp1251',
+            ],
+            'request' => [
+                'cookieValidationKey' => '123',
+            ],
+        ],
+    ];
+}catch (\Exception $error){
+    // загрузка конфигурации приложения
+#$config = require(__DIR__ . '/../config/web.php');
+    $config = [
+        'id' => 'rutrackerSpy',
+        'basePath' => dirname(__DIR__),
+        'extensions' => require('../vendor/yiisoft/extensions.php'),
+        'components' => [
+            'request' => [
+                'cookieValidationKey' => '123',
+            ],
+        ],
+    ];
+};
 Event::$configAfter = null;
 Event::$configBefore = null;
-
-// загрузка конфигурации приложения
-#$config = require(__DIR__ . '/../config/web.php');
-$config = [
-    'id' => 'rutrackerSpy',
-    'basePath' => dirname(__DIR__),
-    'extensions' => require('../vendor/yiisoft/extensions.php'),
-    'components' => [
-        'db' => [
-            'class' => 'yii\db\Connection',
-            'dsn' => Config::$dbType.':host='.Config::$dbHost.';dbname='.Config::$dbName,
-            'username' => Config::$dbUser,
-            'password' => Config::$dbPass,
-            'charset' => 'cp1251',
-        ],
-        'request' => [
-            'cookieValidationKey' => '123',
-        ],
-    ],
-];
 
 if (YII_ENV_DEV) {
     // configuration adjustments for 'dev' environment

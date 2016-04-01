@@ -56,9 +56,17 @@ class Configuration
     public function run()
     {
         if(isset(self::$configFileName)){
-            require_once(self::$configFileName);
+            if(is_file(self::$configFileName)){
+                require_once(self::$configFileName);
+            }else{
+                throw new \Exception("Not find config file");
+            };
         }else{
-            require_once("config.php");
+            if(is_file("config.php")){
+                require_once("config.php");
+            }else{
+                throw new \Exception("Not find config file");
+            };
         };
 
         if(isset($config) && !isset(self::$configStatus)){
