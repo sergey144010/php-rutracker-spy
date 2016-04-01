@@ -11,6 +11,7 @@ $fileAutoloadArray =
         'sergey144010/Socket/Stream/Http/HttpClient.php',
         'sergey144010/RutrackerSpy/Event.php',
         'sergey144010/RutrackerSpy/Configuration.php',
+        'sergey144010/RutrackerSpy/ConfigurationCheck.php',
         'sergey144010/RutrackerSpy/Logger.php',
         'sergey144010/RutrackerSpy/Main.php',
         'sergey144010/RutrackerSpy/FiltrInterface.php',

@@ -23,7 +23,7 @@ echo Nav::widget([
 
 NavBar::end();
 
-if(isset($isFileConfig)){
+if($isFileConfig){
     echo Button::widget([
         "label" => iconv("cp1251","utf-8","Файл конфига найден"),
         'options' => ['class' => 'btn btn-success btn-xs'],
@@ -31,6 +31,20 @@ if(isset($isFileConfig)){
 }else{
     echo Button::widget([
         "label" => iconv("cp1251","utf-8","Файл конфига не найден"),
+        'options' => ['class' => 'btn btn-danger btn-xs'],
+    ]);
+};
+
+echo "<br><br>";
+
+if($configCheck){
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Конфиг правильно настроен"),
+        'options' => ['class' => 'btn btn-success btn-xs'],
+    ]);
+}else{
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Конфиг не настроен"),
         'options' => ['class' => 'btn btn-danger btn-xs'],
     ]);
 };
