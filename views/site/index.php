@@ -49,6 +49,19 @@ if($configCheck){
     ]);
 };
 
+echo "<br><br>";
+
+if($filtrCheck){
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Файлы фильтров найдены и фильтры настроены"),
+        'options' => ['class' => 'btn btn-success btn-xs'],
+    ]);
+}else{
+    echo Button::widget([
+        "label" => iconv("cp1251","utf-8","Файлы фильтров не настроены"),
+        'options' => ['class' => 'btn btn-danger btn-xs'],
+    ]);
+};
 ?>
 <div class="site-index">
 

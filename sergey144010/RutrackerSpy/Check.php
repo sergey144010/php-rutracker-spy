@@ -5,7 +5,7 @@ namespace sergey144010\RutrackerSpy;
 use sergey144010\RutrackerSpy\Configuration as Config;
 
 
-class ConfigurationCheck
+class Check
 {
     public static function isFile($configFileName)
     {
@@ -17,7 +17,7 @@ class ConfigurationCheck
         return false;
     }
 
-    public static function check($configFileName)
+    public static function configCheck($configFileName)
     {
         $isFileConfig = false;
         if(!is_file($configFileName)){
@@ -78,6 +78,39 @@ class ConfigurationCheck
 
         }else{
             return false;
+        };
+        return false;
+    }
+
+    public static function filtrCheck($themeDir)
+    {
+        $check = false;
+        $files = scandir($themeDir);
+        foreach ($files as $file) {
+            if($file == ".." || $file == "."){continue;};
+            $len = strlen($file);
+            $end = substr($file, -10, $len);
+
+            if($end == ".filtr.php"){
+                $check = self::filtr($themeDir.$file);
+            };
+        };
+        if($check){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static function filtr($file)
+    {
+        require ($file);
+        if(isset($filtr)){
+            if(!$filtr['url']){return false;};
+            if(!$filtr['entry']){return false;};
+            #if(!$filtr['setting']){return false;};
+
+            return true;
         };
         return false;
     }

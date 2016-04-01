@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 
 use sergey144010\RutrackerSpy\Configuration as Config;
-use sergey144010\RutrackerSpy\ConfigurationCheck as ConfigCheck;
+use sergey144010\RutrackerSpy\Check;
 use sergey144010\RutrackerSpy\DbYii;
 use sergey144010\RutrackerSpy\ActiveTable;
 use sergey144010\RutrackerSpy\Logger as Log;
@@ -22,13 +22,29 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $configFileName = "../config.php";
+        $themeDir = "../".Config::$themeSpyDir.DIRECTORY_SEPARATOR;
 
-        $isFileConfig = ConfigCheck::isFile($configFileName);
-        $configCheck = ConfigCheck::check($configFileName);
+        try{
+            $isFileConfig = Check::isFile($configFileName);
+        }catch (\Exception $error){
+            $isFileConfig = false;
+        }
+        try{
+            $configCheck = Check::configCheck($configFileName);
+        }catch (\Exception $error){
+            $configCheck = false;
+        }
 
-         return $this->render('index', [
+        try{
+            $filtrCheck = Check::filtrCheck($themeDir);
+        }catch (\Exception $error){
+            $filtrCheck = false;
+        }
+
+        return $this->render('index', [
              "isFileConfig" => $isFileConfig,
              "configCheck" => $configCheck,
+             "filtrCheck" => $filtrCheck
          ]);
     }
 
