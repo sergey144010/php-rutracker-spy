@@ -49,9 +49,9 @@ foreach ($models as $topic) {
 };
 $link .= "</table>";
 
-echo $link;
-
 // отображаем ссылки на страницы
 echo LinkPager::widget([
     'pagination' => $pages,
 ]);
+
+echo $link;

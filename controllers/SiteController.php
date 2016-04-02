@@ -60,7 +60,7 @@ class SiteController extends Controller
             $countQuery = clone $query;
             $pages = new Pagination(['totalCount' => $countQuery->count()]);
             $models = $query->offset($pages->offset)
-                ->limit($pages->limit)
+                ->limit($pages->limit)->orderBy(['id' => SORT_DESC])
                 #->asArray()
                 ->all();
 
