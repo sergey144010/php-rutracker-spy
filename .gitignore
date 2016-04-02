@@ -8,6 +8,6 @@ config.php
 composer.lock
 Thumbs.db
 /web/assets/
-/web/css/
+/web/css/test/
 /runtime/
 test.php
