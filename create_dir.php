@@ -54,6 +54,7 @@ class Create
         $this->file(Config::$themeSpyDir.DIRECTORY_SEPARATOR.Config::$themeSpyFileName);
         $this->dir(Config::$torrentDir);
         $this->dir(Config::$torrentDirTemp);
+        $this->dir("web/assets");
     }
 
     public function run()

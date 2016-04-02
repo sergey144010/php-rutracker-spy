@@ -90,7 +90,7 @@ php create_config.php
         ]
 ```
 
-Создать недостающие директории cookie, log, themeSpy, torrent
+Создать недостающие директории cookie, log, themeSpy, torrent, web/assets
 запустив скрипт
 ```php
 php create_dir.php
