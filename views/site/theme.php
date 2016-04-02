@@ -4,7 +4,8 @@ use sergey144010\RutrackerSpy\Configuration as Config;
 use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
 use yii\bootstrap\Html;
-use \yii\helpers\Url;
+use yii\helpers\Url;
+use yii\widgets\LinkPager;
 
 /* @var $this yii\web\View */
 $this->title = 'RutrackerSpy';
@@ -25,9 +26,10 @@ echo Nav::widget([
 ]);
 
 NavBar::end();
+
 $link = false;
 $link .= "<table class='table'>";
-foreach ($topicArray as $topic) {
+foreach ($models as $topic) {
     $link .= "<tr><td>";
     $link .= "<a target='_blank' href='http://rutracker.org/forum/".$topic['href']."'>";
     $link .= iconv("cp1251","utf-8", base64_decode($topic['name']));
@@ -43,11 +45,13 @@ foreach ($topicArray as $topic) {
         "class"=>"btn btn-success btn-xs",
         "type"=>"button",
     ]);
-    #$link .= "<a href='../".Config::$torrentDir."/t=".$id.".torrent'>";
-    #$link .= $topic['themeId'];
-    #$link .= "</a>";
     $link .= "</td></tr>";
 };
 $link .= "</table>";
 
 echo $link;
+
+// отображаем ссылки на страницы
+echo LinkPager::widget([
+    'pagination' => $pages,
+]);

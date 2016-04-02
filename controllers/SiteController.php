@@ -4,8 +4,9 @@ namespace app\controllers;
 
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\Controller;
+use yii\data\Pagination;
 
 use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Check;
@@ -53,9 +54,20 @@ class SiteController extends Controller
         if(Yii::$app->request->isGet && isset($_GET['themeId'])){
 
             ActiveTable::setTable($_GET['themeId']);
-            $topicArray = ActiveTable::find()->asArray()->all();
+            #$topicArray = ActiveTable::find()->asArray()->all();
+
+            $query = ActiveTable::find();
+            $countQuery = clone $query;
+            $pages = new Pagination(['totalCount' => $countQuery->count()]);
+            $models = $query->offset($pages->offset)
+                ->limit($pages->limit)
+                #->asArray()
+                ->all();
+
             return $this->render('theme',[
-                "topicArray"=>$topicArray,
+                #"topicArray"=>$topicArray,
+                'models' => $models,
+                'pages' => $pages
             ]);
 
         }else{

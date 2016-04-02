@@ -2,7 +2,7 @@
 use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
 use yii\bootstrap\Html;
-use \yii\helpers\Url;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 $this->title = 'RutrackerSpy';
@@ -40,6 +40,5 @@ if(!$error){
 }else{
     echo "<table class='table'><tr><td class='danger'>Table's not exist</td></tr></table>";
 };
-
 
 ?>
