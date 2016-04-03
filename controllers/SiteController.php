@@ -8,6 +8,8 @@ use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\data\Pagination;
 
+use yii\bootstrap\Html;
+
 use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Check;
 use sergey144010\RutrackerSpy\DbYii;
@@ -54,6 +56,7 @@ class SiteController extends Controller
         if(Yii::$app->request->isGet && isset($_GET['themeId'])){
 
             ActiveTable::setTable($_GET['themeId']);
+            $themeId = $_GET['themeId'];
             #$topicArray = ActiveTable::find()->asArray()->all();
 
             $query = ActiveTable::find();
@@ -67,7 +70,8 @@ class SiteController extends Controller
             return $this->render('theme',[
                 #"topicArray"=>$topicArray,
                 'models' => $models,
-                'pages' => $pages
+                'pages' => $pages,
+                'themeId' => base64_encode($themeId)
             ]);
 
         }else{
@@ -105,5 +109,39 @@ class SiteController extends Controller
         return $this->render("log",["log"=>$log]);
     }
 
+    public function actionWatch()
+    {
+        if(Yii::$app->request->isPjax && isset($_GET['themeId']) && isset($_GET['id'])){
+
+            $themeId = base64_decode($_GET['themeId']);
+            $id = $_GET['id'];
+
+            $label = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
+
+            ActiveTable::setTable($themeId);
+            $topic = ActiveTable::findOne($id);
+            /**
+             * @var ActiveTable $topic
+             */
+            if($topic->watch == "1"){
+                $topic->watch = 0;
+                $topic->save();
+                $class = 'btn btn-default btn-xs';
+                return Html::a($label, ["site/watch", "themeId"=>base64_encode($themeId), "id"=>$id], ["class"=>$class]);
+            }
+            elseif($topic->watch == "0"){
+                $topic->watch = 1;
+                $topic->save();
+                $class = 'btn btn-success btn-xs';
+                return Html::a($label, ["site/watch", "themeId"=>base64_encode($themeId), "id"=>$id], ["class"=>$class]);
+            }else{
+                    $topic->watch = 1;
+                    $topic->save();
+                    $class = 'btn btn-success btn-xs';
+                    return Html::a($label, ["site/watch", "themeId"=>base64_encode($themeId), "id"=>$id], ["class"=>$class]);
+            }
+        };
+        return false;
+    }
 
 }

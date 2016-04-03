@@ -43,6 +43,7 @@ class DbYii implements DbInterface
             "size"=>"varchar(50) CHARACTER SET cp1251 NOT NULL DEFAULT ''",
             "href"=>"varchar(100) CHARACTER SET cp1251 NOT NULL DEFAULT ''",
             "torrentFile"=>"varchar(150) CHARACTER SET cp1251 NOT NULL DEFAULT ''",
+            "watch"=>"int(1) NOT NULL DEFAULT '0'",
         ],
             "ENGINE=InnoDB DEFAULT CHARSET=cp1251");
         $schema->execute();
