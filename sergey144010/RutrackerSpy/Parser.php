@@ -114,7 +114,33 @@ class Parser
                 isset($themeCurrentSeed) &&
                 isset($themeCurrentLeech)
             ){
-                list($themeCurrentRusName, $topicOtherPart) = explode("/", $themeCurrentName, 2);
+
+                #########################################
+
+                // Поиск одинаковых значений в базе данных идёт по колонке
+                // 'nameRusHash' => $themeCurrentRusNameHash,
+                // соответственно нужно разобрать $themeCurrentName
+                // и выделить $themeCurrentRusName так чтобы,
+                // можно было осуществить поиск по $themeCurrentRusName.
+                // Соответственно здесь можно подключить из конфига
+                // шаблон регулярного выражения для конкретного раздела.
+                // Например есть тема
+                // " (Pop / Hip Hop) [CD] Chagrin D'Amour - Chagrin D'Amour - 2001, FLAC (image+.cue), lossless "
+                // Создать фильтр для темы и в нём задать шаблон, например такой, чтобы выделить название
+                // "/\].*\(/i"
+
+                $themeCurrentNameArray = explode("/", $themeCurrentName, 2);
+                if(isset($themeCurrentNameArray[1])){
+                    $themeCurrentRusName = $themeCurrentNameArray[0];
+                }else{
+                    // Здесь можно вставить внешний парсер из конфига к разделу
+                    #preg_match("/.*(.*).*[.*].*/i", $themeCurrentNameArray[0], $matches);
+                    $themeCurrentRusName = $themeCurrentNameArray[0];
+                };
+
+                #########################################
+
+                #list($themeCurrentRusName, $topicOtherPart) = explode("/", $themeCurrentName, 2);
                 $themeCurrentRusNameHash = hash('md5', $themeCurrentRusName);
 
                 /*

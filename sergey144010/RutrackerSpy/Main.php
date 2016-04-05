@@ -151,8 +151,11 @@ namespace sergey144010\RutrackerSpy {
                 $this->rutrackerClient->getContent();
                 $this->rutrackerClient->writeToFile($this->rutrackerClient->content);
                 // Парсим раздел
+                #Log::add("Parser::contentGetThemeArrayMaxSize - start");
                 $themeInternetArray = Parser::contentGetThemeArrayMaxSize($this->rutrackerClient->content);
+                #Log::add("Parser::getTitle - start");
                 $themeInternetTitle = Parser::getTitle($this->rutrackerClient->content);
+                #Log::add("Parser::getPagination - start");
                 $themeInternetCountPage = Parser::getPagination($this->rutrackerClient->content);
                 $this->countPage = $themeInternetCountPage;
 
@@ -179,7 +182,9 @@ namespace sergey144010\RutrackerSpy {
                             // Переопределяем настройки фильтра из главного конфига
                             Config::$filtrSetting = $this->themeRaw["setting"];
                         };
-                        #$rule = $this->filtrObject(Config::$filtrClass);
+                        /**
+                         * @var Filtr $rule
+                         */
                         $rule = $this->filtr;
                         $ruleCheck = false;
                         if($rule->run($themeInternet)){
@@ -197,41 +202,53 @@ namespace sergey144010\RutrackerSpy {
                             if ($element) {
                                 // Совпадения найдены
                                 Log::add("Find in DB");
-                                // Сравниваем размеры элементов
-                                $elementBaseSize = Parser::sizeMb(base64_decode($element['size']));
-                                $elementInSize = Parser::sizeMb($themeInternet['size']);
 
-                                $contrast = false;
-                                if($elementBaseSize<$elementInSize){$contrast = 0;};
-                                if($elementBaseSize>$elementInSize){$contrast = 1;};
-                                if($elementBaseSize==$elementInSize){$contrast = 2;};
+                                if (
+                                    isset(Config::$filtrSetting["size"]["downloadBigger"]) &&
+                                    Config::$filtrSetting["size"]["downloadBigger"] == "on"
+                                ){
+                                    // Сравниваем размеры элементов
+                                    $elementBaseSize = Parser::sizeMb(base64_decode($element['size']));
+                                    $elementInSize = Parser::sizeMb($themeInternet['size']);
 
-                                if($contrast == 0){
-                                    Log::add("ElementBaseSize < ElementInSize");
-                                    #Log::add('element[size] - '.$element['size']);
-                                    Log::add($elementBaseSize." < ".$elementInSize);
-                                    // Скачиваем торрент файл
-                                    $this->rutrackerClient->getTorrentFile($themeInternet['torrentFile']);
-                                    // Добавляем новый элемент в базу
-                                    // в случае успешной загрузки
-                                    if($this->rutrackerClient->torrentFileStatus){
-                                        $this->db->tableSet($tableId);
-                                        $this->db->elementAdd($themeInternet);
-                                    }else{
-                                        Log::add("Element is not add in data base");
+                                    $contrast = false;
+                                    if ($elementBaseSize < $elementInSize) {
+                                        $contrast = 0;
                                     };
-                                };
+                                    if ($elementBaseSize > $elementInSize) {
+                                        $contrast = 1;
+                                    };
+                                    if ($elementBaseSize == $elementInSize) {
+                                        $contrast = 2;
+                                    };
 
-                                if($contrast == 1){
-                                    Log::add("ElementBaseSize > ElementInSize");
-                                    Log::add("Continue");
-                                    continue;
-                                };
+                                    if ($contrast == 0) {
+                                        Log::add("ElementBaseSize < ElementInSize");
+                                        #Log::add('element[size] - '.$element['size']);
+                                        Log::add($elementBaseSize . " < " . $elementInSize);
+                                        // Скачиваем торрент файл
+                                        $this->rutrackerClient->getTorrentFile($themeInternet['torrentFile']);
+                                        // Добавляем новый элемент в базу
+                                        // в случае успешной загрузки
+                                        if ($this->rutrackerClient->torrentFileStatus) {
+                                            $this->db->tableSet($tableId);
+                                            $this->db->elementAdd($themeInternet);
+                                        } else {
+                                            Log::add("Element is not add in data base");
+                                        };
+                                    };
 
-                                if($contrast == 2){
-                                    Log::add("ElementBaseSize == ElementInSize");
-                                    Log::add("Continue");
-                                    continue;
+                                    if ($contrast == 1) {
+                                        Log::add("ElementBaseSize > ElementInSize");
+                                        Log::add("Continue");
+                                        continue;
+                                    };
+
+                                    if ($contrast == 2) {
+                                        Log::add("ElementBaseSize == ElementInSize");
+                                        Log::add("Continue");
+                                        continue;
+                                    };
                                 };
 
                             } else {
@@ -289,6 +306,7 @@ namespace sergey144010\RutrackerSpy {
                             // то ничего не происходит
                             if($countSeePage > 0){
                                 // Формируем массив для парсинга
+                                $fileThemeArray = false;
                                 $i=0;$start=0;
                                 while($i < $countSeePage){
                                     $start = $start+50;
@@ -299,6 +317,7 @@ namespace sergey144010\RutrackerSpy {
 
                             // Если массив сформирован запускаем основной процесс
                             if(isset($fileThemeArray)){
+                                $this->fileThemeArray = false;
                                 $this->fileThemeArray = $fileThemeArray;
                                 $this->stopParsing = true;
                                 $this->mainProcess();

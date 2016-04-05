@@ -16,5 +16,8 @@ try{
     $program->run();
 }catch (\Exception $error){
     Log::add($error->getMessage());
+    Log::add($error->getCode());
+    Log::add($error->getFile());
+    Log::add($error->getLine());
 };
 

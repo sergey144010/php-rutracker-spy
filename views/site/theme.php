@@ -77,3 +77,8 @@ foreach ($models as $topic) {
 echo "</table>";
 
 #echo $link;
+
+// отображаем ссылки на страницы
+echo LinkPager::widget([
+    'pagination' => $pages,
+]);
