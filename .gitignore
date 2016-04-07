@@ -11,3 +11,5 @@ Thumbs.db
 /web/css/test/
 /runtime/
 test.php
+
+tests/_output/*
