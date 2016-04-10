@@ -283,6 +283,11 @@ class RutrackerClient extends HttpClient
 
     public function downloadTorrentFile($torrentFile)
     {
+        /**
+         * Изменение разметки на Rutracker, замечено 05.04.2016
+         */
+        $torrentFile = "http://rutracker.org/forum/".$torrentFile;
+
         list($link, $torrentId) = explode("?", $torrentFile);
 
         Log::add("Download torrent - ".$torrentId);
@@ -301,17 +306,29 @@ class RutrackerClient extends HttpClient
         $this->http->header->cookie("bb_data=" . $this->bbData);
         $this->http->header->connection("keep-alive");
         $this->http->header->contentType("application/x-www-form-urlencoded");
+
         try{
             $this->send();
+        }catch (\Exception $error){
+            Log::add("ERROR: (RutrackerClient.downloadTorrentFile.send()) : Download failed ");
+            Log::add($torrentFile);
+            Log::add($this->target);
+        };
 
+        try{
             $this->getContent();
+        }catch (\Exception $error){
+            Log::add("ERROR: (RutrackerClient.downloadTorrentFile.getContent()) : Download failed ");
+        }
+
+        try{
             $handle = fopen(Config::$torrentDirTemp.DIRECTORY_SEPARATOR.$torrentId.".torrent","w");
             fwrite($handle, $this->content);
             fclose($handle);
-
         }catch (\Exception $error){
-            Log::add("ERROR: (RutrackerClient) : Download failed ");
-        };
+            Log::add("ERROR: (RutrackerClient.downloadTorrentFile.fwrite()) : Download failed ");
+        }
+
         return $this;
     }
 
@@ -338,7 +355,7 @@ class RutrackerClient extends HttpClient
                     $this->torrentFileStatus = true;
                     return true;
                 }else{
-                    Log::add("ERROR: (RutrackerClient) : fileTorrent is not right");
+                    Log::add("ERROR: (RutrackerClient.checkTorrentFile()) : fileTorrent is not right");
                     $this->torrentFileStatus = false;
                     return false;
                 }
@@ -355,12 +372,12 @@ class RutrackerClient extends HttpClient
                 }
                 */
             }else{
-                Log::add("ERROR: (RutrackerClient) : fileTorrent empty");
+                Log::add("ERROR: (RutrackerClient.checkTorrentFile()) : fileTorrent empty");
                 $this->torrentFileStatus = false;
                 return false;
             }
         }else{
-            Log::add("ERROR: (RutrackerClient) : fileTorrent not found");
+            Log::add("ERROR: (RutrackerClient.checkTorrentFile()) : fileTorrent not found");
             $this->torrentFileStatus = false;
             return false;
         }
@@ -381,6 +398,8 @@ class RutrackerClient extends HttpClient
         if($attempt){
             if(preg_match("/^\d+$/", $attempt)){
                 $countAttempt = $attempt;
+            }elseif($attempt == "forever"){
+                $countAttempt = 0;
             }else{
                 $countAttempt = 10;
             };
