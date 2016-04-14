@@ -11,5 +11,9 @@ Thumbs.db
 /web/css/test/
 /runtime/
 test.php
+<<<<<<< HEAD
 
 tests/_output/*
+=======
+/tests/
+>>>>>>> master
