@@ -19,22 +19,15 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
-		#'//allfont.ru/css/?fonts=lobster',
-		#'//allfont.ru/css/?fonts=heinrichscript',
-		#'css/my.css',
     ];
 	public $cssOptions = [
 		
 	];
     public $js = [
-	    #'js/site123.js',
+
     ];
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
-        #'yii\bootstrap\BootstrapPluginAsset',
-        #'yii\bootstrap\BootstrapThemeAsset',
-		#'ivs\w1\TestAsset',
-		#'tinymce\tinymce\TinymcePluginAsset',
     ];
 }

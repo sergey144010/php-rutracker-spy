@@ -46,7 +46,7 @@ class Logger
         };
     }
 
-    public function addToFile($file, $string)
+    public static function addToFile($file, $string)
     {
             if(is_string($string)){
                 $time = date("[Y-m-d H:i:s]");

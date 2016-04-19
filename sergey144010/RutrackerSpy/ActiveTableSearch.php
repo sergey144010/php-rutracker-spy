@@ -1,16 +1,12 @@
 <?php
 
-namespace app\models;
+namespace sergey144010\RutrackerSpy;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Theme;
+use sergey144010\RutrackerSpy\ActiveTable;
 
-/**
- * ThemeSearch represents the model behind the search form about `app\models\Theme`.
- */
-class ThemeSearch extends Theme
+class ActiveTableSearch extends ActiveTable
 {
     /**
      * @inheritdoc
@@ -18,8 +14,7 @@ class ThemeSearch extends Theme
     public function rules()
     {
         return [
-            #[['id'], 'integer'],
-            [['themeId', 'name'], 'safe'],
+            ['name', 'safe'],
         ];
     }
 
@@ -41,7 +36,7 @@ class ThemeSearch extends Theme
      */
     public function search($params)
     {
-        $query = Theme::find();
+        $query = ActiveTable::find();
 
         // add conditions that should always apply here
 
@@ -58,13 +53,10 @@ class ThemeSearch extends Theme
         }
 
         // grid filtering conditions
-        #$query->andFilterWhere([
-        #    'id' => $this->id,
-        #]);
-
-        $query->andFilterWhere(['like', 'themeId', $this->themeId])
-            ->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', iconv("utf-8", "cp1251", $this->name)]);
+        $query->orderBy(['id' => SORT_DESC]);
 
         return $dataProvider;
     }
+
 }

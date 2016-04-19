@@ -22,8 +22,10 @@ $fileAutoloadArray =
         'sergey144010/RutrackerSpy/DbYii.php',
         'sergey144010/RutrackerSpy/Yii.php',
         'sergey144010/RutrackerSpy/ActiveTable.php',
+        'sergey144010/RutrackerSpy/ActiveTableSearch.php',
         'sergey144010/RutrackerSpy/Parser.php',
         'sergey144010/RutrackerSpy/RutrackerClient.php',
+        'sergey144010/RutrackerSpy/Pjax.php',
     ];
 
 foreach ($fileAutoloadArray as $file) {

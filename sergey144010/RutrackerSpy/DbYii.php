@@ -113,7 +113,7 @@ class DbYii implements DbInterface
     public function elementAdd(array $array)
     {
         $theme = $array;
-        $theme['name'] = base64_encode($array['name']);
+        #$theme['name'] = base64_encode($array['name']);
         $theme['size'] = base64_encode($array['size']);
 
         // ѕишем в базу

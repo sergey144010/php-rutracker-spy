@@ -1,13 +1,18 @@
 <?php
 
+#use yii\helpers\Html;
 use sergey144010\RutrackerSpy\Configuration as Config;
 use yii\bootstrap\NavBar;
 use yii\bootstrap\Nav;
+use yii\grid\GridView;
 use yii\bootstrap\Html;
-use yii\bootstrap\Button;
 use yii\helpers\Url;
-use yii\widgets\LinkPager;
-use yii\widgets\Pjax;
+use sergey144010\RutrackerSpy\Pjax;
+
+/* @var $this yii\web\View */
+/* @var $searchModel app\models\ThemeSearch */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+
 
 /* @var $this yii\web\View */
 $this->title = 'RutrackerSpy';
@@ -29,56 +34,72 @@ echo Nav::widget([
 
 NavBar::end();
 
-// отображаем ссылки на страницы
-echo LinkPager::widget([
-    'pagination' => $pages,
-]);
+?>
 
-$theadName = iconv("cp1251","utf-8","Название");
-$theadStatus = iconv("cp1251","utf-8","");
-$theadSize = iconv("cp1251","utf-8","Размер");
-$theadFile = iconv("cp1251","utf-8","Скачать");
+    <?= GridView::widget([
+        'tableOptions' => ['class' => 'table'],
+        'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
+        'layout' => "{summary}\n{pager}\n{items}\n{pager}",
+        'columns' => [
 
-#$link = false;
-echo "<table class='table'>";
-echo "<thead>";
-echo "<tr><th>$theadName</th><th>$theadStatus</th><th>$theadSize</th><th>$theadFile</th></tr>";
-echo "</thead>";
-foreach ($models as $topic) {
-    echo "<tr><td>";
-    echo "<a target='_blank' href='http://rutracker.org/forum/".$topic['href']."'>";
-    echo iconv("cp1251","utf-8", base64_decode($topic['name']));
-    echo "</a>";
-    echo " ";
-    echo "</td><td>";
+            [
+                'attribute' => 'name',
+                'label' => iconv("cp1251", "utf-8", 'Название'),
+                'content' => function($data){
+                    return Html::a(
+                        iconv("cp1251", "utf-8", $data->name),
+                        #Url::to(['site/list-theme', 'themeId'=>$data->themeId]),
+                        "http://rutracker.org/forum/".$data->href,
+                        [
+                            #"class"=>"btn btn-primary btn-xs",
+                            #"type"=>"button",
+                            "target" => '_blank',
+                        ]
+                    );
+                }
+            ],
+            [
+                #'attribute' => 'watch',
+                'label' => '',
+                'content' => function($data){
+                    if($data->watch==1){
+                        $class = 'btn btn-success btn-xs';
+                    }else{
+                        $class = 'btn btn-default btn-xs';
+                    };
+                    $label = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
 
-    if($topic['watch']==1){
-        $class = 'btn btn-success btn-xs';
-    }else{
-        $class = 'btn btn-default btn-xs';
-    };
-    $label = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
+                    Pjax::begin(["enablePushState"=>false, "timeout"=>"50000"]);
+                    Pjax::end();
 
-    Pjax::begin(["enablePushState"=>false, "timeout"=>"10000"]);
-    echo  Html::a($label, ["site/watch", "themeId"=>$themeId, "id"=>$topic['id']], ["class"=>$class]);
-    Pjax::end();
+                    $out = Pjax::$init;
+                    $out .= Html::a($label, ["site/watch", "themeId"=>base64_encode($_GET['themeId']), "id"=>$data->id], ["class"=>$class]);
+                    $out .= Pjax::$run;
 
-    echo "</td><td>";
-    echo base64_decode($topic['size']);
-    echo "</td><td>";
-    $id = substr($topic['themeId'],3);
-    $href = "../".Config::$torrentDir."/t=".$id.".torrent";
-    echo Html::a("Download", $href, [
-        "class"=>"btn btn-success btn-xs",
-        "type"=>"button",
+                    return $out;
+                }
+            ],
+            [
+                #'attribute' => 'size',
+                'label' => iconv("cp1251", "utf-8", 'Размер'),
+                'content' => function($data){
+                    return base64_decode($data->size);
+                }
+            ],
+            [
+                #'attribute' => 'torrentFile',
+                'label' => iconv("cp1251", "utf-8", 'Скачать'),
+                'content' => function($data){
+                    $id = substr($data->themeId, 3);
+                    $href = "../".Config::$torrentDir."/t=".$id.".torrent";
+                    return Html::a("Download", $href, [
+                        "class"=>"btn btn-success btn-xs",
+                        "type"=>"button",
+                    ]);
+                }
+            ],
+
+        ],
     ]);
-    echo "</td></tr>";
-};
-echo "</table>";
-
-#echo $link;
-
-// отображаем ссылки на страницы
-echo LinkPager::widget([
-    'pagination' => $pages,
-]);
+    ?>
