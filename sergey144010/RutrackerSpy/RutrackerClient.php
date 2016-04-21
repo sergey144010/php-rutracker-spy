@@ -5,6 +5,7 @@ use sergey144010\Socket\Stream\Http\HttpClient;
 use Sunra\PhpSimple\HtmlDomParser;
 use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Logger as Log;
+use sergey144010\RutrackerSpy\Event;
 
 class RutrackerClient extends HttpClient
 {
@@ -413,6 +414,7 @@ class RutrackerClient extends HttpClient
 
             if($this->torrentFileStatus){
                 $this->moveTorrentFile();
+                Event::attach(Event::$downloadFileTorrentAfter);
             };
         };
 
