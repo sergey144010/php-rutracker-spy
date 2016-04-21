@@ -139,7 +139,13 @@ namespace sergey144010\RutrackerSpy {
                 if(is_array($themeSpy)){
                     // Сохраняем настройки раздела
                     $this->themeRaw = $themeSpy;
+                    // Устанавливаем url
                     $themeSpy = trim($this->themeRaw["url"]);
+                    // Берем регулярку из конфига если есть
+                    // и устанавливаем её в парсере
+                    if(isset($this->themeRaw["extraction"])){
+                        Parser::setExtraction($this->themeRaw["extraction"]);
+                    };
                 };
 
                 Log::add("Current theme - ".$themeSpy);
@@ -152,7 +158,13 @@ namespace sergey144010\RutrackerSpy {
                 $this->rutrackerClient->writeToFile($this->rutrackerClient->content);
                 // Парсим раздел
                 #Log::add("Parser::contentGetThemeArrayMaxSize - start");
-                $themeInternetArray = Parser::contentGetThemeArrayMaxSize($this->rutrackerClient->content);
+                try{
+                    $themeInternetArray = Parser::contentGetThemeArrayMaxSize($this->rutrackerClient->content);
+                }catch (\Exception $error){
+                    Log::add($error->getMessage());
+                    Log::add($error->getTraceAsString());
+                    $themeInternetArray = false;
+                };
                 #Log::add("Parser::getTitle - start");
                 $themeInternetTitle = Parser::getTitle($this->rutrackerClient->content);
                 #Log::add("Parser::getPagination - start");
@@ -322,6 +334,7 @@ namespace sergey144010\RutrackerSpy {
                                 $this->stopParsing = true;
                                 $this->mainProcess();
                                 $this->stopParsing = false;
+                                $this->fileThemeArray = false;
                             };
                         };
                     };

@@ -6,6 +6,22 @@ use sergey144010\BaseFunctionExtension\ArrayExt;
 
 class Parser
 {
+    protected static $extraction;
+
+    public static function setExtraction($in_extraction)
+    {
+        self::$extraction = $in_extraction;
+    }
+
+    public static function is_extraction()
+    {
+        if(isset(self::$extraction)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     /**
      * @param $content
      * @return false|string
@@ -41,6 +57,9 @@ class Parser
         return $count;
     }
 
+    /*
+     * @return array || false
+     */
     public static function contentGetThemeArrayMaxSize($content)
     {
         $fileName = $content;
@@ -129,18 +148,38 @@ class Parser
                 // Создать фильтр для темы и в нём задать шаблон, например такой, чтобы выделить название
                 // "/\].*\(/i"
 
-                $themeCurrentNameArray = explode("/", $themeCurrentName, 2);
-                if(isset($themeCurrentNameArray[1])){
-                    $themeCurrentRusName = $themeCurrentNameArray[0];
+                if(self::is_extraction()){
+                    if(is_callable(self::$extraction)){
+                        #echo "is_callable";
+                        $preg_match = self::$extraction;
+                        $name = $preg_match($themeCurrentName);
+                        if($name){
+                            if(is_string($name)){
+                                #echo "is_string";
+                                $themeCurrentRusName = $name;
+                            }else{
+                                throw new \Exception ("ERROR: Parser.contentGetThemeArrayMaxSize().Extraction : Name is not a string");
+                            };
+                        }else{
+                            $themeCurrentRusName = false;
+                            continue;
+                        };
+                    }else{
+                        throw new \Exception ("ERROR: Parser.contentGetThemeArrayMaxSize().Extraction : Extraction is not callable");
+                    };
                 }else{
-                    // Здесь можно вставить внешний парсер из конфига к разделу
-                    #preg_match("/.*(.*).*[.*].*/i", $themeCurrentNameArray[0], $matches);
-                    $themeCurrentRusName = $themeCurrentNameArray[0];
+                    // Если парсер названия не задан, то применяем стандартный
+                    $themeCurrentNameArray = explode("/", $themeCurrentName, 2);
+                    if(isset($themeCurrentNameArray[1])){
+                        $themeCurrentRusName = trim($themeCurrentNameArray[0]);
+                    }else{
+                        $themeCurrentRusName = trim($themeCurrentNameArray[0]);
+                    };
+
                 };
 
                 #########################################
 
-                #list($themeCurrentRusName, $topicOtherPart) = explode("/", $themeCurrentName, 2);
                 $themeCurrentRusNameHash = hash('md5', $themeCurrentRusName);
 
                 /*
