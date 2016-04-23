@@ -13,5 +13,5 @@ config.php
 composer.lock
 test.php
 
-tests/
-tests/_output/*
+/tests/
+/tests/_output/*
