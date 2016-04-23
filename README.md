@@ -402,8 +402,11 @@ php create_theme_config.php 1 NameTopic
 Пример
 ------
 Имеется два раздела.
+
 Раздел раз - http://rutracker.org/forum/viewforum.php?f=2093
+
 Раздел два - http://rutracker.org/forum/viewforum.php?f=22
+
 В первом разделе названия тем имеют шаблон.
 ```php
 "Звёздные войны: Пробуждение силы / Star Wars: Episode VII - The Force Awakens (Джей Джей Абрамс / J.J. Abrams) [2015, США, Фантастика, фэнтези, боевик, приключения, BDRip] [Локализованный видеоряд] Dub + Sub"
@@ -567,16 +570,3 @@ nssm.exe install RuTrackerSpy "путь до run_service.cmd"
 ```php
 nssm.exe install RuTrackerSpy "C:\RutrackerSpy\run_service.cmd"
 ```
-
-Добавлено
------------------
-1. Прикреплен yii2 фреймворк.
-2. Дописан новый класс работы с базой данных на основе yii2.
-3. Добавлен веб интерфейс на основе yii2.
-4. Добавлена возможность парсинга страниц раздела.
-
-
-Что нужно исправить/добавить
-----------------------------
-
-1. Отвязаться от nameRusHash.
