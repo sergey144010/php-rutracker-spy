@@ -30,6 +30,15 @@ echo Html::a(
         "type"=>"button",
     ]
 );
+echo "&nbsp;";
+echo Html::a(
+    "Make Report",
+    Url::to(['site/log', 'report'=>'ok']),
+    [
+        "class"=>"btn btn-primary",
+        "type"=>"button",
+    ]
+);
 
 echo "<br>";
 echo "<br>";

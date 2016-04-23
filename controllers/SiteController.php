@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use sergey144010\RutrackerSpy\Report;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -125,12 +126,16 @@ class SiteController extends Controller
     public function actionLog()
     {
         $fileLog = "../".Config::$logDir.DIRECTORY_SEPARATOR.Config::$logFileName;
+        $log = false;
 
         if(isset($_GET['clear']) && $_GET['clear']=='ok'){
             file_put_contents($fileLog,"");
         };
+        if(isset($_GET['report']) && $_GET['report']=='ok'){
+            $this->actionReport();
+            $log = '<p>File <b>report.zip</b> created in <b>'.Config::$logDir.'</b> directory.<br> Send this file on <b>informationpeople@mail.ru</b> with theme <b>RutrackerSpy:Report</b></p>';
+        };
 
-        $log = false;
         if(is_file($fileLog)){
             $array = file($fileLog);
             foreach ($array as $row) {
@@ -209,6 +214,11 @@ class SiteController extends Controller
             return "ERROR";
         };
 
+    }
+
+    public function actionReport()
+    {
+        (new Report())->run();
     }
 
 }

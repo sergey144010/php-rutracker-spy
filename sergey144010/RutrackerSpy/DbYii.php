@@ -6,6 +6,7 @@ use sergey144010\RutrackerSpy\Yii;
 use sergey144010\RutrackerSpy\ActiveTable;
 use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Event;
+use sergey144010\RutrackerSpy\Buffer;
 use sergey144010\RutrackerSpy\Logger as Log;
 
 
@@ -129,8 +130,10 @@ class DbYii implements DbInterface
 
         // Пишем лог
         Log::add("Add new element in data base - ".$theme['id']);
+        // Запоминаем текущий елемент
+        Buffer::$theme = $theme;
         // Прикрепляем событие
-        Event::attach(Event::$elementAddAfter);
+        Event::attach((new Event)->elementAddAfter());
 
     }
 
