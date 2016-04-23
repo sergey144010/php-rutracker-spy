@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use sergey144010\RutrackerSpy\Report;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -14,6 +15,7 @@ use sergey144010\RutrackerSpy\Configuration as Config;
 use sergey144010\RutrackerSpy\Check;
 use sergey144010\RutrackerSpy\DbYii;
 use sergey144010\RutrackerSpy\ActiveTable;
+use sergey144010\RutrackerSpy\ActiveTableSearch;
 use sergey144010\RutrackerSpy\Logger as Log;
 use sergey144010\RutrackerSpy\Main;
 
@@ -55,6 +57,7 @@ class SiteController extends Controller
     {
         if(Yii::$app->request->isGet && isset($_GET['themeId'])){
 
+            /*
             ActiveTable::setTable($_GET['themeId']);
             $themeId = $_GET['themeId'];
             #$topicArray = ActiveTable::find()->asArray()->all();
@@ -73,6 +76,17 @@ class SiteController extends Controller
                 'pages' => $pages,
                 'themeId' => base64_encode($themeId)
             ]);
+            */
+
+            ActiveTable::setTable($_GET['themeId']);
+
+            $searchModel = new ActiveTableSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('theme', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
 
         }else{
 
@@ -90,15 +104,38 @@ class SiteController extends Controller
 
     }
 
+    public function actionTest()
+    {
+        if($_GET['themeId']){
+            # &themeId=f%3D2093
+            ActiveTable::setTable($_GET['themeId']);
+            $themeId = $_GET['themeId'];
+
+            $searchModel = new ActiveTableSearch();
+            $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+            return $this->render('test', [
+                'searchModel' => $searchModel,
+                'dataProvider' => $dataProvider,
+            ]);
+
+        };
+        return false;
+    }
+
     public function actionLog()
     {
         $fileLog = "../".Config::$logDir.DIRECTORY_SEPARATOR.Config::$logFileName;
+        $log = false;
 
         if(isset($_GET['clear']) && $_GET['clear']=='ok'){
             file_put_contents($fileLog,"");
         };
+        if(isset($_GET['report']) && $_GET['report']=='ok'){
+            $this->actionReport();
+            $log = '<p>File <b>report.zip</b> created in <b>'.Config::$logDir.'</b> directory.<br> Send this file on <b>informationpeople@mail.ru</b> with theme <b>RutrackerSpy:Report</b></p>';
+        };
 
-        $log = false;
         if(is_file($fileLog)){
             $array = file($fileLog);
             foreach ($array as $row) {
@@ -111,9 +148,40 @@ class SiteController extends Controller
 
     public function actionWatch()
     {
+        #return "ok";
+/*
+        if(Yii::$app->request->isPjax){
+            if(isset($_GET['themeId'])){
+                if(isset($_GET['id'])){
+                    return "ok";
+                }else{
+                    return "NO GET id";
+                };
+            }else{
+                return "NO GET themeId";
+            };
+        }else{
+            return "NO PJAX";
+        };
+
+   */
+/*
+        if(Yii::$app->request->isPjax && isset($_GET['themeId']) && isset($_GET['id'])){
+            $themeId = $_GET['themeId'];
+            $id = $_GET['id'];
+            $label = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
+            ActiveTable::setTable($themeId);
+            $topic = ActiveTable::findOne($id);
+            return "OK";
+        }else{
+            return "ERROR";
+        };
+
+       */
         if(Yii::$app->request->isPjax && isset($_GET['themeId']) && isset($_GET['id'])){
 
             $themeId = base64_decode($_GET['themeId']);
+            #$themeId = $_GET['themeId'];
             $id = $_GET['id'];
 
             $label = "<span class='glyphicon glyphicon-ok' aria-hidden='true'></span>";
@@ -139,9 +207,18 @@ class SiteController extends Controller
                     $topic->save();
                     $class = 'btn btn-success btn-xs';
                     return Html::a($label, ["site/watch", "themeId"=>base64_encode($themeId), "id"=>$id], ["class"=>$class]);
-            }
+            };
+            return "NO";
+        }else{
+            #var_dump(Yii::$app->request->queryParams);
+            return "ERROR";
         };
-        return false;
+
+    }
+
+    public function actionReport()
+    {
+        (new Report())->run();
     }
 
 }

@@ -46,15 +46,45 @@ class Logger
         };
     }
 
-    public function addToFile($file, $string)
+    public static function addToFile($file, $in_type)
     {
-            if(is_string($string)){
+            if(is_string($in_type)){
                 $time = date("[Y-m-d H:i:s]");
-                $string = $time." ".$string.PHP_EOL;
-                echo $string;
+                $string = $time." ".$in_type.PHP_EOL;
+                #echo $string;
                 file_put_contents($file, $string, FILE_APPEND);
-            }else{
-                echo "Is not string".PHP_EOL;
+                return;
             };
+
+            if(is_array($in_type)){
+
+                $time = date("[Y-m-d H:i:s]");
+                $string = $time.PHP_EOL;
+                $string .= self::iterateArray($in_type);
+                file_put_contents($file, $string, FILE_APPEND);
+                return;
+            };
+
+        echo "Type input variable is ".gettype($in_type).", it not supported.".PHP_EOL;
+        return;
+
+    }
+
+    /*
+     * @return array || false
+     */
+    public static function iterateArray($array)
+    {
+        $string = false;
+        foreach ($array as $key => $val ) {
+            if(is_array($val)){
+                $string .= $key." => ".PHP_EOL;
+                $string .= self::iterateArray($val);
+            };
+            if(is_string($val)){
+                $string .= $key." => ".$val.PHP_EOL;
+            };
+        };
+        return $string;
     }
 }

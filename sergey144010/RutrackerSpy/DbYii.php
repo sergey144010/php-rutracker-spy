@@ -5,6 +5,8 @@ namespace sergey144010\RutrackerSpy;
 use sergey144010\RutrackerSpy\Yii;
 use sergey144010\RutrackerSpy\ActiveTable;
 use sergey144010\RutrackerSpy\Configuration as Config;
+use sergey144010\RutrackerSpy\Event;
+use sergey144010\RutrackerSpy\Buffer;
 use sergey144010\RutrackerSpy\Logger as Log;
 
 
@@ -113,7 +115,7 @@ class DbYii implements DbInterface
     public function elementAdd(array $array)
     {
         $theme = $array;
-        $theme['name'] = base64_encode($array['name']);
+        #$theme['name'] = base64_encode($array['name']);
         $theme['size'] = base64_encode($array['size']);
 
         // Пишем в базу
@@ -128,6 +130,10 @@ class DbYii implements DbInterface
 
         // Пишем лог
         Log::add("Add new element in data base - ".$theme['id']);
+        // Запоминаем текущий елемент
+        Buffer::$theme = $theme;
+        // Прикрепляем событие
+        Event::attach((new Event)->elementAddAfter());
 
     }
 

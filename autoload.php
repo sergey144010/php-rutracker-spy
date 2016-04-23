@@ -9,7 +9,9 @@ $fileAutoloadArray =
         'sergey144010/Socket/Stream/Http/UserAgent.php',
         'sergey144010/Socket/Stream/Response.php',
         'sergey144010/Socket/Stream/Http/HttpClient.php',
+        'sergey144010/RutrackerSpy/Buffer.php',
         'sergey144010/RutrackerSpy/Event.php',
+        'sergey144010/RutrackerSpy/Report.php',
         'sergey144010/RutrackerSpy/Configuration.php',
         'sergey144010/RutrackerSpy/Check.php',
         'sergey144010/RutrackerSpy/Logger.php',
@@ -22,8 +24,10 @@ $fileAutoloadArray =
         'sergey144010/RutrackerSpy/DbYii.php',
         'sergey144010/RutrackerSpy/Yii.php',
         'sergey144010/RutrackerSpy/ActiveTable.php',
+        'sergey144010/RutrackerSpy/ActiveTableSearch.php',
         'sergey144010/RutrackerSpy/Parser.php',
         'sergey144010/RutrackerSpy/RutrackerClient.php',
+        'sergey144010/RutrackerSpy/Pjax.php',
     ];
 
 foreach ($fileAutoloadArray as $file) {
