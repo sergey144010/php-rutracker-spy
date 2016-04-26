@@ -79,6 +79,7 @@ namespace sergey144010\RutrackerSpy {
                         Log::add("ERROR: Failed to open stream: HTTP request failed !");
                     }else{
                         $this->rutrackerClient->getHeader();
+                        Log::addToFile(Config::$logDir.DIRECTORY_SEPARATOR.'header.txt', $this->rutrackerClient->header);
                         $this->rutrackerClient->getCookie();
                         $this->rutrackerClient->getBbData();
                         $this->rutrackerClient->saveCookie();

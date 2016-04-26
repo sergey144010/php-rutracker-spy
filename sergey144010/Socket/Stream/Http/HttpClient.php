@@ -83,12 +83,24 @@ class HttpClient
     {
         if($this->response){
             $response = stream_get_meta_data($this->response);
+            #var_dump($response);
             foreach ($response['wrapper_data'] as $header) {
                 $headerRaw = explode(":", $header, 2);
                 if (isset($headerRaw[1])) {
                     $headerName = trim($headerRaw[0]);
                     $headerValue = trim($headerRaw[1]);
+                    /*
+                     * Здесь не учтено, что могут быть одинаковые названия
+                     * Set-Cookie например.
+                     * Исправляем только для Set-Cookie
+                     */
+                    if($headerName == 'Set-Cookie'){
+                        if(isset($headerArray['Set-Cookie'])){
+                            $headerName = 'Set-Cookie-Ssl';
+                        };
+                    };
                     $headerArray[$headerName] = $headerValue;
+
                 }else{
                     $headerArray['Status'] = $headerRaw[0];
                 };

@@ -221,4 +221,9 @@ class SiteController extends Controller
         (new Report())->run();
     }
 
+    public function actionTemplate()
+    {
+        return $this->render('template');
+    }
+
 }

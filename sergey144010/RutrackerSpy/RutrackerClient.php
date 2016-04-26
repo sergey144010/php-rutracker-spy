@@ -245,10 +245,15 @@ class RutrackerClient extends HttpClient
         $this->open("http://login.rutracker.org/forum/login.php");
         $this->http->method->post(
             [
-                'redirect' => 'index.php',
+                /**
+                 * Изменение процесса логина на Rutracker, замечено 26.04.2016
+                 * Плюс изменения в HttpClient.getHeader()
+                 */
+                #'redirect' => 'index.php',
                 'login_username' => Config::$clientUser,
                 'login_password' => Config::$clientPass,
-                'login' => '%C2%F5%EE%E4'
+                #'login' => '%C2%F5%EE%E4'
+                'login' => '%E2%F5%EE%E4'
             ]
         );
         $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");

@@ -16,6 +16,7 @@ echo Nav::widget([
     'items' => [
         ['label' => 'Themes', 'url' => ['/site/list-theme']],
         ['label' => 'Log', 'url' => ['/site/log']],
+        ['label' => 'Template', 'url' => ['/site/template']],
     ],
     'options' => ['class' => 'navbar-nav'],
 ]);
