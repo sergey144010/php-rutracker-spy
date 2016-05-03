@@ -426,4 +426,45 @@ class RutrackerClient extends HttpClient
         return $this;
     }
 
+    public function checkCorrectHtml()
+    {
+        if($this->checkHtml()){
+            return true;
+        }else{
+            $i = 1; $countAttempt = 5;
+            do {
+                $this->repeatSend();
+                if($i == $countAttempt){$i = 1; break;};
+                $i++;
+            }while(!$this->checkHtml());
+        };
+        if($this->checkHtml()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkHtml()
+    {
+        $html = trim($this->content);
+        $endTag = substr($html, -7);
+        if($endTag == '</html>'){
+            return true;
+        }else{
+            Log::add("ERROR: (RutrackerClient.checkHtml()) : html is not correct");
+            return false;
+        }
+    }
+
+    public function repeatSend()
+    {
+        Log::add("Repeat Send");
+        $this->urlOpenLogin($this->target);
+        $this->getContent();
+    }
+
 }

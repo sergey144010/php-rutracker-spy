@@ -156,6 +156,7 @@ namespace sergey144010\RutrackerSpy {
                 // Открываем раздел
                 $this->rutrackerClient->urlOpenLogin($themeSpy);
                 $this->rutrackerClient->getContent();
+                $this->rutrackerClient->checkCorrectHtml();
                 $this->rutrackerClient->writeToFile($this->rutrackerClient->content);
                 // Парсим раздел
                 #Log::add("Parser::contentGetThemeArrayMaxSize - start");
