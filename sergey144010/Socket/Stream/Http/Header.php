@@ -2,9 +2,21 @@
 
 namespace sergey144010\Socket\Stream\Http {
 
+    use sergey144010\Socket\Stream\Http\UserAgent;
+
     class Header
     {
         protected $value;
+
+        /**
+         * @var \sergey144010\Socket\Stream\Http\UserAgent
+         */
+        public $userAgent;
+
+        public function __construct()
+        {
+            $this->userAgent = new UserAgent();
+        }
 
         public function host($value)
         {

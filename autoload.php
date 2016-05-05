@@ -9,6 +9,7 @@ $fileAutoloadArray =
         'sergey144010/Socket/Stream/Http/UserAgent.php',
         'sergey144010/Socket/Stream/Response.php',
         'sergey144010/Socket/Stream/Http/HttpClient.php',
+        'sergey144010/RutrackerSpy/Object.php',
         'sergey144010/RutrackerSpy/Buffer.php',
         'sergey144010/RutrackerSpy/Event.php',
         'sergey144010/RutrackerSpy/Report.php',

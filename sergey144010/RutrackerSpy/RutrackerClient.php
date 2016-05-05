@@ -200,14 +200,20 @@ class RutrackerClient extends HttpClient
 
     ###########################################################
 
+    public function sameHeaders()
+    {
+        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
+        $this->http->header->userAgent->Google_Chrome_40_x64();
+        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->http->header->connection("keep-alive");
+    }
+
     public function indexOpen()
     {
         $this->open("http://rutracker.org/forum/index.php");
         $this->http->method->get();
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
-        $this->http->header->connection("keep-alive");
+        $this->sameHeaders();
         $this->send();
         return $this;
     }
@@ -216,12 +222,9 @@ class RutrackerClient extends HttpClient
     {
         $this->open("http://rutracker.org/forum/index.php");
         $this->http->method->get();
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->sameHeaders();
         $this->http->header->referer("http://login.rutracker.org/forum/login.php");
         $this->http->header->cookie("bb_data=" . $this->bbData);
-        $this->http->header->connection("keep-alive");
         $this->send();
         return $this;
     }
@@ -230,12 +233,9 @@ class RutrackerClient extends HttpClient
     {
         $this->open($url);
         $this->http->method->get();
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->sameHeaders();
         $this->http->header->referer("http://login.rutracker.org/forum/login.php");
         $this->http->header->cookie("bb_data=" . $this->bbData);
-        $this->http->header->connection("keep-alive");
         $this->send();
         return $this;
     }
@@ -256,12 +256,8 @@ class RutrackerClient extends HttpClient
                 'login' => '%E2%F5%EE%E4'
             ]
         );
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->sameHeaders();
         $this->http->header->referer("http://login.rutracker.org/forum/login.php");
-        #$this->http->header->referer("http://rutracker.org/forum/index.php");
-        $this->http->header->connection("keep-alive");
         $this->http->header->contentType("application/x-www-form-urlencoded");
         $this->send();
         return $this;
@@ -276,12 +272,9 @@ class RutrackerClient extends HttpClient
                 'logout' => '1'
             ]
         );
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->sameHeaders();
         $this->http->header->referer("http://rutracker.org/forum/index.php");
         $this->http->header->cookie("bb_data=" . $this->bbData);
-        $this->http->header->connection("keep-alive");
         $this->http->header->contentType("application/x-www-form-urlencoded");
         $this->send();
         return $this;
@@ -305,12 +298,9 @@ class RutrackerClient extends HttpClient
                 'form_token' => $this->token
             ]
         );
-        $this->http->header->userAgent("Mozilla/5.0 (Windows NT 10.0; WOW64; rv:44.0) Gecko/20100101 Firefox/44.0");
-        $this->http->header->accept("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        $this->http->header->acceptLanguage("ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
+        $this->sameHeaders();
         $this->http->header->referer($this->target);
         $this->http->header->cookie("bb_data=" . $this->bbData);
-        $this->http->header->connection("keep-alive");
         $this->http->header->contentType("application/x-www-form-urlencoded");
 
         try{

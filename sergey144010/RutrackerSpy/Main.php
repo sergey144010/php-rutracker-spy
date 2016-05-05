@@ -8,20 +8,21 @@ namespace sergey144010\RutrackerSpy {
     use sergey144010\RutrackerSpy\Filtr;
     use sergey144010\RutrackerSpy\Configuration as Config;
     use sergey144010\RutrackerSpy\Logger as Log;
+    use sergey144010\RutrackerSpy\Object;
 
     class Main
     {
         /**
-         * @var RutrackerClient $rutrackerClient
+         * @var RutrackerClient
          */
         public $rutrackerClient;
 
         /**
-         * @var DbYii $db
+         * @var DbYii
          */
         public $db;
         /**
-         * @var Filtr $filtr
+         * @var Filtr
          */
         public $filtr;
 
@@ -32,32 +33,9 @@ namespace sergey144010\RutrackerSpy {
 
         public function __construct()
         {
-            // Инициализация конфига
-            #new Config();
-
             $this->rutrackerClient = new RutrackerClient();
-            $this->db = $this->dbObject(Config::$dbClass);
-            $this->filtr = $this->filtrObject(Config::$filtrClass);;
-        }
-
-        public function dbObject($class)
-        {
-            return $this->dbClass(new $class);
-        }
-
-        public function dbClass(DbInterface $class)
-        {
-            return $class;
-        }
-
-        public function filtrObject($class)
-        {
-            return $this->filtrClass(new $class);
-        }
-
-        public function filtrClass(FiltrInterface $class)
-        {
-            return $class;
+            $this->db = Object::create(Config::$dbClass, DbInterface::class);
+            $this->filtr = Object::create(Config::$filtrClass, FiltrInterface::class);
         }
 
         public function run()

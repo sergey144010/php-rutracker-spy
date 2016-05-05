@@ -34,7 +34,7 @@ try{
                 'charset' => 'cp1251',
             ],
             'request' => [
-                'cookieValidationKey' => '123',
+                'cookieValidationKey' => 'RutrackerSpy',
             ],
         ],
     ];
